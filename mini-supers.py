@@ -1,7 +1,7 @@
 import tkinter as tk
 
 ventana = tk.Tk()
-ventana.title('Lista de tareas')
+ventana.title('MiniSupers')
 ventana.geometry('400x200')
 
 ingreso_tarea = tk.Entry(ventana)
