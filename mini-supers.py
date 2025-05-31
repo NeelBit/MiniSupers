@@ -1,5 +1,41 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+import uuid
+
+# Variable global para almacenar los productos
+productos = [
+    {
+        "id": uuid.uuid1(),
+        "nombre": "Arroz",
+        "precio": 100,
+        "seleccionado": False
+    },
+    {
+        "id": uuid.uuid1(),
+        "nombre": "Manzana",
+        "precio": 50,
+        "seleccionado": False
+    },
+    {
+        "id": uuid.uuid1(),
+        "nombre": "Pan",
+        "precio": 30,
+        "seleccionado": False
+    },
+    {
+        "id": uuid.uuid1(),
+        "nombre": "Leche",
+        "precio": 80,
+        "seleccionado": False
+    },
+    {
+        "id": uuid.uuid1(),
+        "nombre": "Carne",
+        "precio": 200,
+        "seleccionado": False
+    },
+]
+
 
 # Creamos la ventanita
 ventana = tk.Tk()
@@ -45,6 +81,19 @@ tabla.column('seleccionado', width=50, anchor='center')
 
 tabla.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 scroll.config(command=tabla.yview)
+
+# listar productos
+def listar_productos():
+    # Limpiamos la tabla antes de mostrar los productos
+    """ for item in tabla.get_children():
+        tabla.delete(item) """
+    
+    # Agregamos los productos a la tabla
+    for producto in productos:
+        seleccionado = '✓' if producto['seleccionado'] else ''
+        tabla.insert('', 'end', values=(producto['id'], producto['nombre'], producto['precio'], seleccionado))
+
+listar_productos()
 
 # Este es el botón para eliminar productos (todavía no hace nada...)
 boton_eliminar = tk.Button(ventana, text="Eliminar", bg="#ffdddd")
