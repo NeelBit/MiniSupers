@@ -20,12 +20,12 @@ productos = [
         "id": uuid.uuid1(),
         "nombre": "Pan",
         "precio": 30,
-        "seleccionado": False
+        "seleccionado": True
     },
     {
         "id": uuid.uuid1(),
         "nombre": "Leche",
-        "precio": 80,
+        "precio": 80.50,
         "seleccionado": False
     },
     {
@@ -91,7 +91,7 @@ def listar_productos():
     # Agregamos los productos a la tabla
     for producto in productos:
         seleccionado = '✓' if producto['seleccionado'] else ''
-        tabla.insert('', 'end', values=(producto['id'], producto['nombre'], producto['precio'], seleccionado))
+        tabla.insert('', 'end', values=(producto['id'], producto['nombre'], f'$' + str(producto['precio']), seleccionado))
 
 listar_productos()
 
