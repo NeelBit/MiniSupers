@@ -35,7 +35,7 @@ scroll.pack(side=tk.RIGHT, fill=tk.Y)
 columnas = ('producto', 'nombre', 'precio', 'seleccionado')
 tabla = ttk.Treeview(frame_tabla, columns=columnas, show='headings', yscrollcommand=scroll.set)
 
-# Permitir selección múltiple en la tabla
+# Permitir selección múltiple en la tabla: La selección multiple presionando Ctrl o Shift
 tabla.config(selectmode="extended")
 
 def sincronizar_checks(event=None):
@@ -56,6 +56,7 @@ def carga_nuevo_producto():
     producto = entrada_producto.get().strip()
     nombre = entrada_nombre.get().strip()
     precio = entrada_precio.get().strip()
+
     if not producto or not nombre or not precio:
         messagebox.showwarning("Campos vacíos", "Por favor complete todos los campos.")
         return
@@ -91,7 +92,6 @@ def carga_nuevo_producto():
     entrada_nombre.delete(0, tk.END)
     entrada_precio.delete(0, tk.END)
 
-
 # Cambia el estado de seleccionado en la lista y en la tabla
 def alternar_check(event):
     item_id = tabla.identify_row(event.y)
@@ -111,7 +111,6 @@ def alternar_check(event):
 tabla.bind("<Double-1>", alternar_check)
 
 tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
-
 
 #Ponemos nombre a las columnas 
 tabla.heading('producto', text='Producto')
@@ -141,7 +140,7 @@ def eliminar_seleccionados():
             # Elimina de la lista
             lista_productos[:] = [prod for prod in lista_productos if str(prod["id"]) != item_id]
 
-# Este es el botón para eliminar productos (todavía no hace nada...)
+# Este es el botón para eliminar productos
 boton_eliminar = tk.Button(ventana, text="Eliminar", bg="#ffdddd", command=eliminar_seleccionados)
 boton_eliminar.pack(pady=5)
 
@@ -192,7 +191,7 @@ entrada_precio.grid(row=1, column=2, padx=(10, 5))
 # Esto hace que la columna del botón no se expanda
 frame_ingreso.grid_columnconfigure(3, weight=1)
 
-# Este es un botón para agregar el producto (todavía no hace nada)
+# Este es un botón para agregar el producto
 boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd", command=carga_nuevo_producto)
 boton_agregar.grid(row=1, column=3, padx=(20, 0), sticky="e")
 
