@@ -1,6 +1,10 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+# Lista para guardar los productos
+lista_productos = []
+contador_id = [1]  # Usamos una lista para que sea mutable dentro de la función
+
 # Creamos la ventanita
 ventana = tk.Tk()
 ventana.title('MiniSupers')
@@ -31,24 +35,84 @@ scroll.pack(side=tk.RIGHT, fill=tk.Y)
 columnas = ('producto', 'nombre', 'precio', 'seleccionado')
 tabla = ttk.Treeview(frame_tabla, columns=columnas, show='headings', yscrollcommand=scroll.set)
 
-#defino la función carga nuevo producro
-def carga_nuevo_producto(tabla, nuevo_nombre, nuevo_precio, nuevo_producto):
+# Permitir selección múltiple en la tabla
+tabla.config(selectmode="extended")
+
+def sincronizar_checks(event=None):
+    seleccionados = set(tabla.selection())
+    for item in tabla.get_children():
+        valores = list(tabla.item(item, "values"))
+        if item in seleccionados:
+            valores[3] = "✓"
+        else:
+            valores[3] = ""
+        tabla.item(item, values=valores)
+
+# Vincula la selección de la tabla con la función de sincronización
+tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
+
+#defino la función carga nuevo producto
+def carga_nuevo_producto():
+    producto = entrada_producto.get().strip()
+    nombre = entrada_nombre.get().strip()
+    precio = entrada_precio.get().strip()
+    if not producto or not nombre or not precio:
+        messagebox.showwarning("Campos vacíos", "Por favor complete todos los campos.")
+        return
+    try:
+        float(precio)
+    except ValueError:
+        messagebox.showwarning("Precio inválido", "El precio debe ser un número.")
+        return
+
+    id_producto = contador_id[0]
+    contador_id[0] += 1
+
+    # Guardar en la lista
+    nuevo = {
+        "id": id_producto,
+        "producto": producto,
+        "nombre": nombre,
+        "precio": precio,
+        "seleccionado": False
+    }
+    lista_productos.append(nuevo)
+
+    # Insertar en la tabla
     tabla.insert(
         "",
         tk.END,
-        values=(nuevo_nombre, nuevo_precio, nuevo_producto, ""),
+        iid=str(id_producto),  # Usamos el id como iid
+        values=(producto, nombre, precio, "")
     )
+
+    # Limpiar entradas
+    entrada_producto.delete(0, tk.END)
+    entrada_nombre.delete(0, tk.END)
+    entrada_precio.delete(0, tk.END)
+
+
+# Cambia el estado de seleccionado en la lista y en la tabla
 def alternar_check(event):
     item_id = tabla.identify_row(event.y)
     col = tabla.identify_column(event.x)
-    if not item_id or col != '#4':  # '#4' es la columna "seleccionado"
+    if not item_id or col != '#4':
         return
     valores = list(tabla.item(item_id, "values"))
-    valores[3] = "" if valores[3] == "✓" else "✓"
+    seleccionado = valores[3] == "✓"
+    valores[3] = "" if seleccionado else "✓"
     tabla.item(item_id, values=valores)
-    print(valores)
+    # Actualiza en la lista
+    for prod in lista_productos:
+        if str(prod["id"]) == item_id:
+            prod["seleccionado"] = not seleccionado
+            break
 
 tabla.bind("<Double-1>", alternar_check)
+
+tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
+
+
 #Ponemos nombre a las columnas 
 tabla.heading('producto', text='Producto')
 tabla.heading('nombre', text='Nombre')
@@ -66,20 +130,17 @@ scroll.config(command=tabla.yview)
 
 #Definimos la función eliminar seleccionados
 def eliminar_seleccionados():
-    lista_id = []
-    for item in tabla.get_children():
-        valores = tabla.item(item, "values")
-        if len(valores) > 3 and valores[3] == "✓":
-            lista_id.append(item)
-            pass
-    if len(lista_id) != 0:
-        mensaje = messagebox.askquestion('Advertencia',"Está seguro que quiere eliminar el item, S/N")
-        if mensaje == "yes":
-            for item in lista_id:
-                tabla.delete(item)
-        else:
-            return
-        
+    seleccionados = tabla.selection()
+    if not seleccionados:
+        messagebox.showinfo("Eliminar", "No hay productos seleccionados.")
+        return
+    mensaje = messagebox.askquestion('Advertencia', "¿Está seguro que quiere eliminar los productos seleccionados?")
+    if mensaje == "yes":
+        for item_id in seleccionados:
+            tabla.delete(item_id)
+            # Elimina de la lista
+            lista_productos[:] = [prod for prod in lista_productos if str(prod["id"]) != item_id]
+
 # Este es el botón para eliminar productos (todavía no hace nada...)
 boton_eliminar = tk.Button(ventana, text="Eliminar", bg="#ffdddd", command=eliminar_seleccionados)
 boton_eliminar.pack(pady=5)
@@ -132,7 +193,7 @@ entrada_precio.grid(row=1, column=2, padx=(10, 5))
 frame_ingreso.grid_columnconfigure(3, weight=1)
 
 # Este es un botón para agregar el producto (todavía no hace nada)
-boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd")
+boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd", command=carga_nuevo_producto)
 boton_agregar.grid(row=1, column=3, padx=(20, 0), sticky="e")
 
 # Mostramos la ventana
