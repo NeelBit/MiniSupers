@@ -31,6 +31,24 @@ scroll.pack(side=tk.RIGHT, fill=tk.Y)
 columnas = ('producto', 'nombre', 'precio', 'seleccionado')
 tabla = ttk.Treeview(frame_tabla, columns=columnas, show='headings', yscrollcommand=scroll.set)
 
+#defino la función carga nuevo producro
+def carga_nuevo_producto(tabla, nuevo_nombre, nuevo_precio, nuevo_producto):
+    tabla.insert(
+        "",
+        tk.END,
+        values=(nuevo_nombre, nuevo_precio, nuevo_producto, ""),
+    )
+def alternar_check(event):
+    item_id = tabla.identify_row(event.y)
+    col = tabla.identify_column(event.x)
+    if not item_id or col != '#4':  # '#4' es la columna "seleccionado"
+        return
+    valores = list(tabla.item(item_id, "values"))
+    valores[3] = "" if valores[3] == "✓" else "✓"
+    tabla.item(item_id, values=valores)
+    print(valores)
+
+tabla.bind("<Double-1>", alternar_check)
 #Ponemos nombre a las columnas 
 tabla.heading('producto', text='Producto')
 tabla.heading('nombre', text='Nombre')
@@ -46,9 +64,50 @@ tabla.column('seleccionado', width=50, anchor='center')
 tabla.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 scroll.config(command=tabla.yview)
 
+#Definimos la función eliminar seleccionados
+def eliminar_seleccionados():
+    lista_id = []
+    for item in tabla.get_children():
+        valores = tabla.item(item, "values")
+        if len(valores) > 3 and valores[3] == "✓":
+            lista_id.append(item)
+            pass
+    if len(lista_id) != 0:
+        mensaje = messagebox.askquestion('Advertencia',"Está seguro que quiere eliminar el item, S/N")
+        if mensaje == "yes":
+            for item in lista_id:
+                tabla.delete(item)
+        else:
+            return
+        
 # Este es el botón para eliminar productos (todavía no hace nada...)
-boton_eliminar = tk.Button(ventana, text="Eliminar", bg="#ffdddd")
+boton_eliminar = tk.Button(ventana, text="Eliminar", bg="#ffdddd", command=eliminar_seleccionados)
 boton_eliminar.pack(pady=5)
+
+''' definimos la función buscar en tabla, con un ciclo For. Con el método get_children(), que devuelve una tupla de identificadores 
+de elementos, luego iteramos esa tupla con el ciclo for y compararamos los valores asociados al item con la consulta. Si son iguales,
+seleccionamos el elemento del arból, con el método selection_add().
+'''
+def buscar_en_tabla(consulta):
+    items = tabla.get_children()
+    contador = 0
+    tabla.selection_remove(items)
+    for item in items:  
+        if consulta.lower() in str(tabla.item(item)['values']).lower():
+            tabla.selection_add(item)
+            tabla.focus(item)
+            contador +=1
+            pass
+    if contador == 0:
+        messagebox.showinfo("Buscar", f"No encontró resultados para '{consulta}'.")
+
+# entrada de busqueda
+buscar_entrada= ttk.Entry(ventana)
+buscar_entrada.pack(side=tk.TOP, padx=10, pady=5)
+
+# Boton de busqueda
+busqueda_button = ttk.Button(ventana, text="Buscar", command=lambda: buscar_en_tabla(buscar_entrada.get()))
+busqueda_button.pack(side=tk.TOP, padx=10, pady=5)
 
 # (Frame = Caja) Aquí va la parte de abajo donde escribís los datos
 frame_ingreso = tk.Frame(ventana)
