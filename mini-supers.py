@@ -8,7 +8,7 @@ contador_id = [1]  # Usamos una lista para que sea mutable dentro de la función
 # Creamos la ventanita
 ventana = tk.Tk()
 ventana.title('MiniSupers')
-ventana.geometry('600x400')
+ventana.geometry('600x450')
 
 # Esto es el menú de arriba
 barra_menu = tk.Menu(ventana)
