@@ -2,7 +2,11 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 # Lista para guardar los productos
-lista_productos = []
+lista_productos = [
+    {"producto": "Leche", "nombre": "La Serenísima", "precio": "1200"},
+    {"producto": "Pan", "nombre": "Baguette", "precio": "800"},
+    {"producto": "Queso", "nombre": "Cremoso", "precio": "2500"},
+]
 contador_id = [1]  # Usamos una lista para que sea mutable dentro de la función
 
 # Creamos la ventanita
@@ -35,17 +39,46 @@ scroll.pack(side=tk.RIGHT, fill=tk.Y)
 columnas = ('producto', 'nombre', 'precio', 'seleccionado')
 tabla = ttk.Treeview(frame_tabla, columns=columnas, show='headings', yscrollcommand=scroll.set)
 
+# Sincroniza la lista de productos con la tabla al iniciar
+for prod in lista_productos:
+    # Si no tiene id, asígnale uno
+    if "id" not in prod:
+        prod["id"] = contador_id[0]
+        contador_id[0] += 1
+    tabla.insert(
+        "",
+        tk.END,
+        iid=str(prod["id"]),
+        values=(prod["producto"], prod["nombre"], prod["precio"], "")
+    )
+
 # Permitir selección múltiple en la tabla: La selección multiple presionando Ctrl o Shift
 tabla.config(selectmode="extended")
 
 def sincronizar_checks(event=None):
+    """
+    Sincroniza la columna 'seleccionado' (check) de la tabla con la selección actual del usuario.
+    Marca con '✓' la columna 'seleccionado' de las filas seleccionadas y la desmarca en las no seleccionadas.
+    Se ejecuta automáticamente cada vez que cambia la selección de la tabla.
+    """
+
+    # Obtiene el conjunto de IDs de los elementos actualmente seleccionados en la tabla
     seleccionados = set(tabla.selection())
+
+    # Recorre todos los elementos (filas) de la tabla
     for item in tabla.get_children():
+
+        # Obtiene los valores actuales de la fila como una lista
         valores = list(tabla.item(item, "values"))
+
+        # Si el item está seleccionado, pone el check (✓) en la columna 'seleccionado'
         if item in seleccionados:
             valores[3] = "✓"
         else:
+            # Si no está seleccionado, deja la columna 'seleccionado' vacía
             valores[3] = ""
+        
+        # Actualiza los valores de la fila en la tabla
         tabla.item(item, values=valores)
 
 # Vincula la selección de la tabla con la función de sincronización
