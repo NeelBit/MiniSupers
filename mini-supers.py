@@ -182,17 +182,20 @@ de elementos, luego iteramos esa tupla con el ciclo for y compararamos los valor
 seleccionamos el elemento del arból, con el método selection_add().
 '''
 def buscar_en_tabla(consulta):
-    items = tabla.get_children()
-    contador = 0
-    tabla.selection_remove(items)
-    for item in items:  
-        if consulta.lower() in str(tabla.item(item)['values']).lower():
-            tabla.selection_add(item)
-            tabla.focus(item)
-            contador +=1
-            pass
-    if contador == 0:
-        messagebox.showinfo("Buscar", f"No encontró resultados para '{consulta}'.")
+    if len(consulta) ==0:
+        messagebox.showinfo("Buscar", f"No ingresó un texto para buscar. Por favor ingrese nuevamente")
+    else:
+        items = tabla.get_children()
+        contador = 0
+        tabla.selection_remove(items)
+        for item in items:  
+            if consulta.lower() in str(tabla.item(item)['values']).lower():
+                tabla.selection_add(item)
+                tabla.focus(item)
+                contador +=1
+                pass
+        if contador == 0:
+            messagebox.showinfo("Buscar", f"No encontró resultados para '{consulta}'.")
 
 # entrada de busqueda
 buscar_entrada= ttk.Entry(ventana)
