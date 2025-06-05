@@ -81,9 +81,6 @@ def sincronizar_checks(event=None):
         # Actualiza los valores de la fila en la tabla
         tabla.item(item, values=valores)
 
-# Vincula la selección de la tabla con la función de sincronización
-tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
-
 #defino la función carga nuevo producto
 def carga_nuevo_producto():
     producto = entrada_producto.get().strip()
@@ -143,6 +140,7 @@ def alternar_check(event):
 
 tabla.bind("<Double-1>", alternar_check)
 
+# Vincula la selección de la tabla con la función de sincronización
 tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
 
 #Ponemos nombre a las columnas 
