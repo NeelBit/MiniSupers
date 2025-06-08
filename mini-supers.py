@@ -195,6 +195,18 @@ def buscar_en_tabla(consulta):
         if contador == 0:
             messagebox.showinfo("Buscar", f"No encontró resultados para '{consulta}'.")
 
+#En esta parte creamos cajitas para escribir los datos que se van a ingersar
+entrada_producto = tk.Entry(frame_ingreso, width=20)
+entrada_producto.grid(row=1, column=0, padx=(0, 5))
+entrada_nombre = tk.Entry(frame_ingreso, width=20)
+entrada_nombre.grid(row=1, column=1, padx=(10, 5))
+entrada_precio = tk.Entry(frame_ingreso, width=15)
+entrada_precio.grid(row=1, column=2, padx=(10, 5))
+#Vincula la tecla "Enter" a la función carga_nuevo_producto
+entrada_producto.bind("<Return>", lambda event: carga_nuevo_producto())
+entrada_nombre.bind("<Return>", lambda event: carga_nuevo_producto())
+entrada_precio.bind("<Return>", lambda event: carga_nuevo_producto())
+
 # entrada de busqueda
 buscar_entrada= ttk.Entry(ventana)
 buscar_entrada.pack(side=tk.TOP, padx=10, pady=5)
