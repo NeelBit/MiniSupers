@@ -176,15 +176,21 @@ seleccionamos el elemento del arból, con el método selection_add().
 def buscar_en_tabla(consulta):
     items = tabla.get_children()
     contador = 0
-    tabla.selection_remove(items)
+    tabla.selection_remove(*items)  # El asterisco * descompone la tupla en argumentos individuales, así se eliminan todas las selecciones previas.
+    
+    consulta = consulta.strip()
+    if not consulta:
+        return  # No hace nada si la consulta está vacía
+
     for item in items:  
         if consulta.lower() in str(tabla.item(item)['values']).lower():
             tabla.selection_add(item)
             tabla.focus(item)
             contador += 1
 
-            # Limpia la entrada de búsqueda
-            buscar_entrada.delete(0, tk.END)
+    # Limpia la entrada de búsqueda
+    buscar_entrada.delete(0, tk.END)
+    
     if contador == 0:
         messagebox.showinfo("Buscar", f"No encontró resultados para '{consulta}'.")
 
