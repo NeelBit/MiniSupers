@@ -182,6 +182,9 @@ def buscar_en_tabla(consulta):
             tabla.selection_add(item)
             tabla.focus(item)
             contador += 1
+
+            # Limpia la entrada de búsqueda
+            buscar_entrada.delete(0, tk.END)
     if contador == 0:
         messagebox.showinfo("Buscar", f"No encontró resultados para '{consulta}'.")
 
