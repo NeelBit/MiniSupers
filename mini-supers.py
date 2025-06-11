@@ -206,14 +206,24 @@ def buscar_en_tabla(consulta):
     if contador == 0:
         messagebox.showinfo("Buscar", f"No encontró resultados para '{consulta}'.")
 
+# Frame para agrupar el entry de búsqueda y los botones
+frame_busqueda = tk.Frame(ventana)
+frame_busqueda.pack(side=tk.TOP, padx=10, pady=5)
+
+# Botón para limpiar el entry de búsqueda
+limpiar_button = ttk.Button(frame_busqueda, text="❌", width=4, command=lambda: buscar_entrada.delete(0, tk.END))
+limpiar_button.pack(side=tk.LEFT, padx=(0, 2), pady=2)
+
 # Entrada de busqueda
-buscar_entrada = ttk.Entry(ventana, justify='center')
-buscar_entrada.pack(side=tk.TOP, padx=10, pady=5)
+buscar_entrada = ttk.Entry(frame_busqueda, justify='center')
+buscar_entrada.pack(side=tk.LEFT, padx=10, pady=5)
 buscar_entrada.focus()
 
 # Boton de busqueda
-busqueda_button = ttk.Button(ventana, text="Buscar", command=lambda: buscar_en_tabla(buscar_entrada.get()))
-busqueda_button.pack(side=tk.TOP, padx=10, pady=5)
+busqueda_button = ttk.Button(frame_busqueda, text="Buscar", command=lambda: buscar_en_tabla(buscar_entrada.get()))
+busqueda_button.pack(side=tk.LEFT, padx=10, pady=5)
+
+
 
 # Vincula la tecla "Enter" a la función buscar_en_tabla con buscar_entrada
 buscar_entrada.bind("<Return>", lambda event: buscar_en_tabla(buscar_entrada.get()))
