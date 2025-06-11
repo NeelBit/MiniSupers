@@ -185,14 +185,15 @@ de elementos, luego iteramos esa tupla con el ciclo for y compararamos los valor
 seleccionamos el elemento del arból, con el método selection_add().
 '''
 def buscar_en_tabla(consulta):
-    items = tabla.get_children()
-    contador = 0
-    tabla.selection_remove(*items)  # El asterisco * descompone la tupla en argumentos individuales, así se eliminan todas las selecciones previas.
-    
-    consulta = consulta.strip()
+    # No hace nada si la consulta está vacía
     if not consulta:
-        return  # No hace nada si la consulta está vacía
-
+        return  
+    else:
+        items = tabla.get_children()
+        contador = 0
+        tabla.selection_remove(*items)  # El asterisco * descompone la tupla en argumentos individuales, así se eliminan todas las selecciones previas.
+        consulta = consulta.strip()
+    
     for item in items:  
         if consulta.lower() in str(tabla.item(item)['values']).lower():
             tabla.selection_add(item)
