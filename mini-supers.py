@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+# Importamos la librería para los tooltips
+from idlelib.tooltip import Hovertip
+
 # Lista para guardar los productos
 lista_productos = [
     {"producto": "Leche", "nombre": "La Serenísima", "precio": "1200"},
@@ -180,6 +183,9 @@ def eliminar_seleccionados():
 boton_eliminar = tk.Button(ventana, text="Eliminar", bg="#ffdddd", command=eliminar_seleccionados)
 boton_eliminar.pack(pady=5)
 
+# Tooltip para el botón de eliminar
+Hovertip(boton_eliminar, "Eliminar productos seleccionados", hover_delay=500)
+
 ''' definimos la función buscar en tabla, con un ciclo For. Con el método get_children(), que devuelve una tupla de identificadores 
 de elementos, luego iteramos esa tupla con el ciclo for y compararamos los valores asociados al item con la consulta. Si son iguales,
 seleccionamos el elemento del arból, con el método selection_add().
@@ -214,6 +220,9 @@ frame_busqueda.pack(side=tk.TOP, padx=10, pady=5)
 limpiar_button = ttk.Button(frame_busqueda, text="❌", width=4, command=lambda: buscar_entrada.delete(0, tk.END))
 limpiar_button.pack(side=tk.LEFT, padx=(0, 2), pady=2)
 
+# Tooltip para el botón de limpiar
+Hovertip(limpiar_button, "Limpiar entrada de búsqueda", hover_delay=500)
+
 # Entrada de busqueda
 buscar_entrada = ttk.Entry(frame_busqueda, justify='center')
 buscar_entrada.pack(side=tk.LEFT, padx=10, pady=5)
@@ -223,7 +232,8 @@ buscar_entrada.focus()
 busqueda_button = ttk.Button(frame_busqueda, text="Buscar", command=lambda: buscar_en_tabla(buscar_entrada.get()))
 busqueda_button.pack(side=tk.LEFT, padx=10, pady=5)
 
-
+# Tooltip para el botón de búsqueda
+Hovertip(busqueda_button, "Buscar producto", hover_delay=500)
 
 # Vincula la tecla "Enter" a la función buscar_en_tabla con buscar_entrada
 buscar_entrada.bind("<Return>", lambda event: buscar_en_tabla(buscar_entrada.get()))
@@ -268,15 +278,18 @@ tk.Label(frame_ingreso, text="Producto:").grid(row=0, column=0, sticky="w", padx
 tk.Label(frame_ingreso, text="Nombre:").grid(row=0, column=1, sticky="w", padx=(10, 5))
 tk.Label(frame_ingreso, text="Precio:").grid(row=0, column=2, sticky="w", padx=(10, 5))
 
-# En esta parte creamos cajitas para escribir los datos que se van a ingersarr
+# En esta parte creamos cajitas para escribir los datos que se van a ingresar
 entrada_producto = tk.Entry(frame_ingreso, width=20)
 entrada_producto.grid(row=1, column=0, padx=(0, 5))
+Hovertip(entrada_producto, "Ingrese el tipo de producto (ej. Leche, Pan, Gaseosa)", hover_delay=500)
 
 entrada_nombre = tk.Entry(frame_ingreso, width=20)
 entrada_nombre.grid(row=1, column=1, padx=(10, 5))
+Hovertip(entrada_nombre, "Ingrese el nombre del producto (ej. La Serenísima, Baguette, Manaos)", hover_delay=500)
 
 entrada_precio = tk.Entry(frame_ingreso, width=15)
 entrada_precio.grid(row=1, column=2, padx=(10, 5))
+Hovertip(entrada_precio, "Ingrese el precio del producto (ej. 1200)", hover_delay=500)
 
 # Vincula la tecla "Enter" a la función carga_nuevo_producto con la entrada de precio
 entrada_precio.bind("<Return>", lambda event: carga_nuevo_producto())
@@ -287,5 +300,9 @@ frame_ingreso.grid_columnconfigure(3, weight=1)
 # Este es el botón para agregar el producto
 boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd", command=carga_nuevo_producto)
 boton_agregar.grid(row=1, column=3, padx=(20, 0), sticky="e")
+
+# Tooltip para el botón de agregar
+Hovertip(boton_agregar, "Agregar nuevo producto. Rellene todos los campos", hover_delay=500)
+
 # Mostramos la ventana
 ventana.mainloop()
