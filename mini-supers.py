@@ -80,7 +80,7 @@ def sincronizar_checks(event=None):
 
 tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
 
-#defino la función carga nuevo producto
+# Defino la función carga nuevo producto
 def carga_nuevo_producto():
     producto = entrada_producto.get().strip().title()
     nombre = entrada_nombre.get().strip().title()
@@ -123,14 +123,25 @@ def carga_nuevo_producto():
 
 # Cambia el estado de seleccionado en la lista y en la tabla
 def alternar_check(event):
+    # Obtiene el ID del item (fila) sobre el que se hizo doble clic, usando la posición vertical del mouse
     item_id = tabla.identify_row(event.y)
+    # Obtiene la columna sobre la que se hizo doble clic, usando la posición horizontal del mouse
     col = tabla.identify_column(event.x)
+
+    # Si no se hizo clic sobre ningún item o no es la columna 4 ('seleccionado'), sale de la función
     if not item_id or col != '#4':
         return
+    
+    # Obtiene los valores actuales de la fila como una lista
     valores = list(tabla.item(item_id, "values"))
+    # Determina si el check está marcado actualmente (si hay un "✓" en la columna 'seleccionado')
     seleccionado = valores[3] == "✓"
+    # Alterna el valor del check: si estaba marcado, lo desmarca; si no, lo marca
     valores[3] = "" if seleccionado else "✓"
+    # Actualiza los valores de la fila en la tabla con el nuevo estado del check
     tabla.item(item_id, values=valores)
+
+    # Busca el producto correspondiente en la lista_productos y actualiza su campo 'seleccionado'
     for prod in lista_productos:
         if str(prod["id"]) == item_id:
             prod["seleccionado"] = not seleccionado
@@ -138,7 +149,7 @@ def alternar_check(event):
 
 tabla.bind("<Double-1>", alternar_check)
 
-#Ponemos nombre a las columnas 
+# Ponemos nombre a las columnas 
 tabla.heading('producto', text='Producto')
 tabla.heading('nombre', text='Nombre')
 tabla.heading('precio', text='Precio')
