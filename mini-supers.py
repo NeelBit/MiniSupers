@@ -194,6 +194,9 @@ buscar_entrada.focus()
 busqueda_button = ttk.Button(ventana, text="Buscar", command=lambda: buscar_en_tabla(buscar_entrada.get()))
 busqueda_button.pack(side=tk.TOP, padx=10, pady=5)
 
+# Vincula la tecla "Enter" a la función buscar_en_tabla con buscar_entrada
+buscar_entrada.bind("<Return>", lambda event: buscar_en_tabla(buscar_entrada.get()))
+
 # NUEVO: Frame para ver productos agrupados
 frame_agrupados = tk.Frame(ventana)
 frame_agrupados.pack_forget()  # Oculto al inicio
@@ -244,8 +247,8 @@ entrada_nombre.grid(row=1, column=1, padx=(10, 5))
 entrada_precio = tk.Entry(frame_ingreso, width=15)
 entrada_precio.grid(row=1, column=2, padx=(10, 5))
 
-# Vincula la tecla "Enter" a la función carga_nuevo_producto
-ventana.bind("<Return>", lambda event: carga_nuevo_producto())
+# Vincula la tecla "Enter" a la función carga_nuevo_producto con la entrada de precio
+entrada_precio.bind("<Return>", lambda event: carga_nuevo_producto())
 
 # Esto hace que la columna del botón no se expanda
 frame_ingreso.grid_columnconfigure(3, weight=1)
