@@ -228,6 +228,9 @@ buscar_entrada = ttk.Entry(frame_busqueda, justify='center')
 buscar_entrada.pack(side=tk.LEFT, padx=10, pady=5)
 buscar_entrada.focus()
 
+# Tooltip para la entrada de búsqueda
+Hovertip(buscar_entrada, "¿Qué producto busca?", hover_delay=500)
+
 # Boton de busqueda
 busqueda_button = ttk.Button(frame_busqueda, text="Buscar", command=lambda: buscar_en_tabla(buscar_entrada.get()))
 busqueda_button.pack(side=tk.LEFT, padx=10, pady=5)
