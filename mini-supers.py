@@ -12,14 +12,14 @@ contador_id = [1]  # Usamos una lista para que sea mutable dentro de la función
 # Creamos la ventanita
 ventana = tk.Tk()
 ventana.title('MiniSupers')
-ventana.geometry('600x450')
+ventana.geometry('600x600')  # Aumentamos la altura para que entre el nuevo panel
 
 # Esto es el menú de arriba
 barra_menu = tk.Menu(ventana)
 ventana.config(menu=barra_menu)
 
 menu_productos = tk.Menu(barra_menu, tearoff=0)
-menu_productos.add_command(label="Ver productos")
+menu_productos.add_command(label="Ver productos", command=lambda: mostrar_productos_agrupados())
 
 menu_info = tk.Menu(barra_menu, tearoff=0)
 menu_info.add_command(label="Quiénes somos")
@@ -61,13 +61,11 @@ def sincronizar_checks(event=None):
     Marca con '✓' la columna 'seleccionado' de las filas seleccionadas y la desmarca en las no seleccionadas.
     Se ejecuta automáticamente cada vez que cambia la selección de la tabla.
     """
-
     # Obtiene el conjunto de IDs de los elementos actualmente seleccionados en la tabla
     seleccionados = set(tabla.selection())
 
     # Recorre todos los elementos (filas) de la tabla
     for item in tabla.get_children():
-
         # Obtiene los valores actuales de la fila como una lista
         valores = list(tabla.item(item, "values"))
 
@@ -77,14 +75,15 @@ def sincronizar_checks(event=None):
         else:
             # Si no está seleccionado, deja la columna 'seleccionado' vacía
             valores[3] = ""
-        
-        # Actualiza los valores de la fila en la tabla
+        # Actualiza los valores de la fila en la tabla    
         tabla.item(item, values=valores)
 
-# Defino la función carga nuevo producto
+tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
+
+#defino la función carga nuevo producto
 def carga_nuevo_producto():
-    producto = entrada_producto.get().strip()
-    nombre = entrada_nombre.get().strip()
+    producto = entrada_producto.get().strip().title()
+    nombre = entrada_nombre.get().strip().title()
     precio = entrada_precio.get().strip()
 
     if not producto or not nombre or not precio:
@@ -132,7 +131,6 @@ def alternar_check(event):
     seleccionado = valores[3] == "✓"
     valores[3] = "" if seleccionado else "✓"
     tabla.item(item_id, values=valores)
-    # Actualiza en la lista
     for prod in lista_productos:
         if str(prod["id"]) == item_id:
             prod["seleccionado"] = not seleccionado
@@ -140,10 +138,7 @@ def alternar_check(event):
 
 tabla.bind("<Double-1>", alternar_check)
 
-# Vincula la selección de la tabla con la función de sincronización
-tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
-
-# Ponemos nombre a las columnas 
+#Ponemos nombre a las columnas 
 tabla.heading('producto', text='Producto')
 tabla.heading('nombre', text='Nombre')
 tabla.heading('precio', text='Precio')
@@ -168,7 +163,6 @@ def eliminar_seleccionados():
     if mensaje == "yes":
         for item_id in seleccionados:
             tabla.delete(item_id)
-            # Elimina de la lista
             lista_productos[:] = [prod for prod in lista_productos if str(prod["id"]) != item_id]
 
 # Este es el botón para eliminar productos
@@ -180,32 +174,59 @@ de elementos, luego iteramos esa tupla con el ciclo for y compararamos los valor
 seleccionamos el elemento del arból, con el método selection_add().
 '''
 def buscar_en_tabla(consulta):
-    if len(consulta) ==0:
-        messagebox.showinfo("Buscar", f"No ingresó un texto para buscar. Por favor ingrese nuevamente")
-    else:
-        items = tabla.get_children()
-        contador = 0
-        tabla.selection_remove(items)
-        for item in items:  
-            if consulta.lower() in str(tabla.item(item)['values']).lower():
-                tabla.selection_add(item)
-                tabla.focus(item)
-                contador +=1
-                pass
-        if contador == 0:
-            messagebox.showinfo("Buscar", f"No encontró resultados para '{consulta}'.")
+    items = tabla.get_children()
+    contador = 0
+    tabla.selection_remove(items)
+    for item in items:  
+        if consulta.lower() in str(tabla.item(item)['values']).lower():
+            tabla.selection_add(item)
+            tabla.focus(item)
+            contador += 1
+    if contador == 0:
+        messagebox.showinfo("Buscar", f"No encontró resultados para '{consulta}'.")
 
 # Entrada de busqueda
-buscar_entrada= ttk.Entry(ventana)
+buscar_entrada = ttk.Entry(ventana)
 buscar_entrada.pack(side=tk.TOP, padx=10, pady=5)
 
 # Boton de busqueda
 busqueda_button = ttk.Button(ventana, text="Buscar", command=lambda: buscar_en_tabla(buscar_entrada.get()))
 busqueda_button.pack(side=tk.TOP, padx=10, pady=5)
 
+# NUEVO: Frame para ver productos agrupados
+frame_agrupados = tk.Frame(ventana)
+frame_agrupados.pack_forget()  # Oculto al inicio
+
+tree_agrupados = ttk.Treeview(frame_agrupados)
+tree_agrupados.pack(fill=tk.BOTH, expand=True)
+tree_agrupados.heading("#0", text="Productos por categoría")
+
+# Función para mostrar productos agrupados
+def mostrar_productos_agrupados():
+    if frame_agrupados.winfo_ismapped():
+        frame_agrupados.pack_forget()
+        return
+
+    for item in tree_agrupados.get_children():
+        tree_agrupados.delete(item)
+
+    grupos = {}
+    for producto in lista_productos:
+        grupo = producto['producto']
+        if grupo not in grupos:
+            grupos[grupo] = []
+        grupos[grupo].append(producto)
+
+    for grupo, items in grupos.items():
+        nodo = tree_agrupados.insert("", "end", text=grupo)
+        for item in items:
+            tree_agrupados.insert(nodo, "end", text=f"{item['nombre']} - ${item['precio']}")
+
+    frame_agrupados.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
 # (Frame = Caja) Aquí va la parte de abajo donde escribís los datos
 frame_ingreso = tk.Frame(ventana)
-frame_ingreso.pack(fill=tk.X, side=tk.BOTTOM, padx=10, pady=10)#(pack es el metodo que coloca la caja en la ventana)
+frame_ingreso.pack(fill=tk.X, side=tk.BOTTOM, padx=10, pady=10)
 
 # Estas son etiquetas de cada campo que hicimso
 tk.Label(frame_ingreso, text="Producto:").grid(row=0, column=0, sticky="w", padx=(0, 5))
@@ -223,14 +244,13 @@ entrada_precio = tk.Entry(frame_ingreso, width=15)
 entrada_precio.grid(row=1, column=2, padx=(10, 5))
 
 # Vincula la tecla "Enter" a la función carga_nuevo_producto
-entrada_precio.bind("<Return>", lambda event: carga_nuevo_producto())
+ventana.bind("<Return>", lambda event: carga_nuevo_producto())
 
 # Esto hace que la columna del botón no se expanda
 frame_ingreso.grid_columnconfigure(3, weight=1)
 
-# Este es un botón para agregar el producto
+# Este es el botón para agregar el producto
 boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd", command=carga_nuevo_producto)
 boton_agregar.grid(row=1, column=3, padx=(20, 0), sticky="e")
-
 # Mostramos la ventana
 ventana.mainloop()
