@@ -186,8 +186,9 @@ def buscar_en_tabla(consulta):
         messagebox.showinfo("Buscar", f"No encontró resultados para '{consulta}'.")
 
 # Entrada de busqueda
-buscar_entrada = ttk.Entry(ventana)
+buscar_entrada = ttk.Entry(ventana, justify='center')
 buscar_entrada.pack(side=tk.TOP, padx=10, pady=5)
+buscar_entrada.focus()
 
 # Boton de busqueda
 busqueda_button = ttk.Button(ventana, text="Buscar", command=lambda: buscar_en_tabla(buscar_entrada.get()))
