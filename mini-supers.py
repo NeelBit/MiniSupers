@@ -253,6 +253,25 @@ Hovertip(busqueda_button, "Buscar producto", hover_delay=500)
 # Vincula la tecla "Enter" a la función buscar_en_tabla con buscar_entrada
 buscar_entrada.bind("<Return>", lambda event: buscar_en_tabla(buscar_entrada.get()))
 
+def seleccionar_todos(event):
+    ''' La función seleccionar_todos utilizará los métodos identify(), para identificar la región del heading
+    e identify_column(), para identificar la columna seleccionado. Si el usuario hace click en el heading de la
+    columna 4, y existen elementos seleccionados, los va a deseleccionar con el método selection_remove(), y si
+    no existen elementos seleccionados va a seleccionar a todos los elementos de la tabla, con el método selection_add().  '''
+    region = tabla.identify("region", event.x, event.y)
+    columna = tabla.identify_column(event.x)
+    if region == "heading" and columna == '#4':
+        if tabla.selection():
+            items = tabla.selection()
+            tabla.selection_remove(*items)
+        else:
+            items = tabla.get_children()
+            for item in items:  
+                tabla.selection_add(item)
+                tabla.focus(item)
+
+tabla.bind('<Button-1>', seleccionar_todos)
+
 # NUEVO: Frame para ver productos agrupados
 frame_agrupados = tk.Frame(ventana)
 frame_agrupados.pack_forget()  # Oculto al inicio
