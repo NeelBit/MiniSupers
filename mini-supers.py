@@ -307,33 +307,35 @@ def mostrar_productos_agrupados():
 frame_ingreso = tk.Frame(ventana)
 frame_ingreso.pack(fill=tk.X, side=tk.BOTTOM, padx=10, pady=10)
 
-# Estas son etiquetas de cada campo que hicimso
-tk.Label(frame_ingreso, text="Producto:").grid(row=0, column=0, sticky="w", padx=(0, 5))
-tk.Label(frame_ingreso, text="Nombre:").grid(row=0, column=1, sticky="w", padx=(10, 5))
-tk.Label(frame_ingreso, text="Precio:").grid(row=0, column=2, sticky="w", padx=(10, 5))
+# Estas son etiquetas de cada campo que hicimos
+tk.Label(frame_ingreso, text="Producto:").grid(row=0, column=0, sticky="w", padx=(5, 1))
+tk.Label(frame_ingreso, text="Nombre:").grid(row=0, column=1, sticky="w", padx=(5, 1))
+tk.Label(frame_ingreso, text="Precio:").grid(row=0, column=3, sticky="w", padx=(5, 1))
 
 # En esta parte creamos cajitas para escribir los datos que se van a ingresar
-entrada_producto = tk.Entry(frame_ingreso, width=20)
-entrada_producto.grid(row=1, column=0, padx=(0, 5))
+entrada_producto = tk.Entry(frame_ingreso, width=30, justify='left')
+entrada_producto.grid(row=1, column=0, padx=(5, 1))
 Hovertip(entrada_producto, "Ingrese el tipo de producto (ej. Leche, Pan, Gaseosa)", hover_delay=500)
 
-entrada_nombre = tk.Entry(frame_ingreso, width=20)
-entrada_nombre.grid(row=1, column=1, padx=(10, 5))
+entrada_nombre = tk.Entry(frame_ingreso, width=30, justify='left')
+entrada_nombre.grid(row=1, column=1, padx=(5, 2))
 Hovertip(entrada_nombre, "Ingrese el nombre del producto (ej. La Serenísima, Baguette, Manaos)", hover_delay=500)
+# agreganos una etiqueta con el simbolo $ que se va a ubicar entre las entradas de nombre y precio.
+simbolo_peso = tk.Label(frame_ingreso, text="$").grid(row=1, column=2, sticky="w", padx=(5,0))
 
-entrada_precio = tk.Entry(frame_ingreso, width=15)
-entrada_precio.grid(row=1, column=2, padx=(10, 5))
+entrada_precio = tk.Entry(frame_ingreso, width=15, justify= 'left')
+entrada_precio.grid(row=1, column=3, sticky='w', padx=(0, 2))
 Hovertip(entrada_precio, "Ingrese el precio del producto (ej. 1200)", hover_delay=500)
 
 # Vincula la tecla "Enter" a la función carga_nuevo_producto con la entrada de precio
 entrada_precio.bind("<Return>", lambda event: carga_nuevo_producto())
 
 # Esto hace que la columna del botón no se expanda
-frame_ingreso.grid_columnconfigure(3, weight=1)
+frame_ingreso.grid_columnconfigure(4, weight=1)
 
 # Este es el botón para agregar el producto
-boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd", command=carga_nuevo_producto)
-boton_agregar.grid(row=1, column=3, padx=(20, 0), sticky="e")
+boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd", command=carga_nuevo_producto, justify='left')
+boton_agregar.grid(row=1, column=4, padx=(5), sticky="w")
 
 # Tooltip para el botón de agregar
 Hovertip(boton_agregar, "Agregar nuevo producto. Rellene todos los campos", hover_delay=500)
