@@ -29,6 +29,9 @@ ventana = tk.Tk()
 ventana.title('MiniSupers')
 ventana.geometry('600x600')  # Aumentamos la altura para que entre el nuevo panel
 
+# Icon
+ventana.iconbitmap("icon/icon1.ico")
+
 # Esto es el menú de arriba
 barra_menu = tk.Menu(ventana)
 ventana.config(menu=barra_menu)
