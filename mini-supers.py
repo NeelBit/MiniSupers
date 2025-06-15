@@ -289,7 +289,7 @@ def cambiar_heading_seleccionados(event):
             pass
     else:
         tabla.heading('seleccionado', text='✓')
-#Con el método bind binculará el evento '<Motion>' del cursor del mouse, con la función cambiar_heading_seleccionados.
+#Con el método bind vinculará el evento '<Motion>' del cursor del mouse, con la función cambiar_heading_seleccionados.
 tabla.bind('<Motion>',cambiar_heading_seleccionados)
 
 # NUEVO: Frame para ver productos agrupados
