@@ -171,10 +171,10 @@ tabla.heading('precio', text='Precio')
 tabla.heading('seleccionado', text='✓')
 
 # Esto es para darle un tamaño a cada columna
-tabla.column('producto', width=150)
+tabla.column('producto', width=130)
 tabla.column('nombre', width=130)
 tabla.column('precio', width=100)
-tabla.column('seleccionado', width=70, anchor='center')
+tabla.column('seleccionado', width=90, anchor='center')
 
 tabla.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 scroll.config(command=tabla.yview)
@@ -281,8 +281,12 @@ def cambiar_heading_seleccionados(event):
     region = tabla.identify_region(event.x, event.y)
     columna = tabla.identify_column(event.x)
     if region == "heading" and columna == '#4':
-        tabla.heading('seleccionado', text='Seleccionar todo', anchor="center")
-        pass
+        if tabla.selection():
+            tabla.heading('seleccionado', text='Deseleccionar todo', anchor="center")
+            pass
+        else:
+            tabla.heading('seleccionado', text='Seleccionar todo', anchor="center")
+            pass
     else:
         tabla.heading('seleccionado', text='✓')
 #Con el método bind binculará el evento '<Motion>' del cursor del mouse, con la función cambiar_heading_seleccionados.
