@@ -336,7 +336,7 @@ Hovertip(entrada_producto, "Ingrese el tipo de producto (ej. Leche, Pan, Gaseosa
 entrada_nombre = tk.Entry(frame_ingreso, width=30, justify='left')
 entrada_nombre.grid(row=1, column=1, padx=(5, 2))
 Hovertip(entrada_nombre, "Ingrese el nombre del producto (ej. La Serenísima, Baguette, Manaos)", hover_delay=500)
-# agreganos una etiqueta con el simbolo $ que se va a ubicar entre las entradas de nombre y precio.
+# agregamos una etiqueta con el simbolo $ que se va a ubicar entre las entradas de nombre y precio.
 simbolo_peso = tk.Label(frame_ingreso, text="$").grid(row=1, column=2, sticky="w", padx=(5,0))
 
 entrada_precio = tk.Entry(frame_ingreso, width=15, justify= 'left')
