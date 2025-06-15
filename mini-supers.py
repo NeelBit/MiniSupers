@@ -253,6 +253,25 @@ Hovertip(busqueda_button, "Buscar producto", hover_delay=500)
 # Vincula la tecla "Enter" a la función buscar_en_tabla con buscar_entrada
 buscar_entrada.bind("<Return>", lambda event: buscar_en_tabla(buscar_entrada.get()))
 
+def seleccionar_todos(event):
+    ''' La función seleccionar_todos utilizará los métodos identify(), para identificar la región del heading
+    e identify_column(), para identificar la columna seleccionado. Si el usuario hace click en el heading de la
+    columna 4, y existen elementos seleccionados, los va a deseleccionar con el método selection_remove(), y si
+    no existen elementos seleccionados va a seleccionar a todos los elementos de la tabla, con el método selection_add().  '''
+    region = tabla.identify("region", event.x, event.y)
+    columna = tabla.identify_column(event.x)
+    if region == "heading" and columna == '#4':
+        if tabla.selection():
+            items = tabla.selection()
+            tabla.selection_remove(*items)
+        else:
+            items = tabla.get_children()
+            for item in items:  
+                tabla.selection_add(item)
+                tabla.focus(item)
+
+tabla.bind('<Button-1>', seleccionar_todos)
+
 # NUEVO: Frame para ver productos agrupados
 frame_agrupados = tk.Frame(ventana)
 frame_agrupados.pack_forget()  # Oculto al inicio
@@ -288,33 +307,35 @@ def mostrar_productos_agrupados():
 frame_ingreso = tk.Frame(ventana)
 frame_ingreso.pack(fill=tk.X, side=tk.BOTTOM, padx=10, pady=10)
 
-# Estas son etiquetas de cada campo que hicimso
-tk.Label(frame_ingreso, text="Producto:").grid(row=0, column=0, sticky="w", padx=(0, 5))
-tk.Label(frame_ingreso, text="Nombre:").grid(row=0, column=1, sticky="w", padx=(10, 5))
-tk.Label(frame_ingreso, text="Precio:").grid(row=0, column=2, sticky="w", padx=(10, 5))
+# Estas son etiquetas de cada campo que hicimos
+tk.Label(frame_ingreso, text="Producto:").grid(row=0, column=0, sticky="w", padx=(5, 1))
+tk.Label(frame_ingreso, text="Nombre:").grid(row=0, column=1, sticky="w", padx=(5, 1))
+tk.Label(frame_ingreso, text="Precio:").grid(row=0, column=3, sticky="w", padx=(5, 1))
 
 # En esta parte creamos cajitas para escribir los datos que se van a ingresar
-entrada_producto = tk.Entry(frame_ingreso, width=20)
-entrada_producto.grid(row=1, column=0, padx=(0, 5))
+entrada_producto = tk.Entry(frame_ingreso, width=30, justify='left')
+entrada_producto.grid(row=1, column=0, padx=(5, 1))
 Hovertip(entrada_producto, "Ingrese el tipo de producto (ej. Leche, Pan, Gaseosa)", hover_delay=500)
 
-entrada_nombre = tk.Entry(frame_ingreso, width=20)
-entrada_nombre.grid(row=1, column=1, padx=(10, 5))
+entrada_nombre = tk.Entry(frame_ingreso, width=30, justify='left')
+entrada_nombre.grid(row=1, column=1, padx=(5, 2))
 Hovertip(entrada_nombre, "Ingrese el nombre del producto (ej. La Serenísima, Baguette, Manaos)", hover_delay=500)
+# agreganos una etiqueta con el simbolo $ que se va a ubicar entre las entradas de nombre y precio.
+simbolo_peso = tk.Label(frame_ingreso, text="$").grid(row=1, column=2, sticky="w", padx=(5,0))
 
-entrada_precio = tk.Entry(frame_ingreso, width=15)
-entrada_precio.grid(row=1, column=2, padx=(10, 5))
+entrada_precio = tk.Entry(frame_ingreso, width=15, justify= 'left')
+entrada_precio.grid(row=1, column=3, sticky='w', padx=(0, 2))
 Hovertip(entrada_precio, "Ingrese el precio del producto (ej. 1200)", hover_delay=500)
 
 # Vincula la tecla "Enter" a la función carga_nuevo_producto con la entrada de precio
 entrada_precio.bind("<Return>", lambda event: carga_nuevo_producto())
 
 # Esto hace que la columna del botón no se expanda
-frame_ingreso.grid_columnconfigure(3, weight=1)
+frame_ingreso.grid_columnconfigure(4, weight=1)
 
 # Este es el botón para agregar el producto
-boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd", command=carga_nuevo_producto)
-boton_agregar.grid(row=1, column=3, padx=(20, 0), sticky="e")
+boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd", command=carga_nuevo_producto, justify='left')
+boton_agregar.grid(row=1, column=4, padx=(5), sticky="w")
 
 # Tooltip para el botón de agregar
 Hovertip(boton_agregar, "Agregar nuevo producto. Rellene todos los campos", hover_delay=500)
