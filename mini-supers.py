@@ -172,9 +172,9 @@ tabla.heading('seleccionado', text='✓')
 
 # Esto es para darle un tamaño a cada columna
 tabla.column('producto', width=150)
-tabla.column('nombre', width=150)
+tabla.column('nombre', width=130)
 tabla.column('precio', width=100)
-tabla.column('seleccionado', width=50, anchor='center')
+tabla.column('seleccionado', width=70, anchor='center')
 
 tabla.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 scroll.config(command=tabla.yview)
@@ -198,11 +198,11 @@ boton_eliminar.pack(pady=5)
 # Tooltip para el botón de eliminar
 Hovertip(boton_eliminar, "Eliminar productos seleccionados", hover_delay=500)
 
-''' definimos la función buscar en tabla, con un ciclo For. Con el método get_children(), que devuelve una tupla de identificadores 
+def buscar_en_tabla(consulta):
+    ''' definimos la función buscar en tabla, con un ciclo For. Con el método get_children(), que devuelve una tupla de identificadores 
 de elementos, luego iteramos esa tupla con el ciclo for y compararamos los valores asociados al item con la consulta. Si son iguales,
 seleccionamos el elemento del arból, con el método selection_add().
 '''
-def buscar_en_tabla(consulta):
     # No hace nada si la consulta está vacía
     if not consulta:
         return  
@@ -271,6 +271,22 @@ def seleccionar_todos(event):
                 tabla.focus(item)
 
 tabla.bind('<Button-1>', seleccionar_todos)
+
+# Cambio de nombre deel heading seleccionados cuando se posiciona el cursor del mouse en el heading.
+def cambiar_heading_seleccionados(event):
+    ''' La función cambiar_heading_seleccionados utilizará los métodos identify_region(), para identificar la región del heading
+    e identify_column(), para identificar la columna seleccionado. Si el usuario posiciona el cursor del mouse en el heading de la
+    columna 4, cambiaremos el nombre del heading por 'Seleccionar todos', y si sale el cursor de esa región
+    volvera a cambiar el nombre a '✓' '''
+    region = tabla.identify_region(event.x, event.y)
+    columna = tabla.identify_column(event.x)
+    if region == "heading" and columna == '#4':
+        tabla.heading('seleccionado', text='Seleccionar todo', anchor="center")
+        pass
+    else:
+        tabla.heading('seleccionado', text='✓')
+#Con el método bind binculará el evento '<Motion>' del cursor del mouse, con la función cambiar_heading_seleccionados.
+tabla.bind('<Motion>',cambiar_heading_seleccionados)
 
 # NUEVO: Frame para ver productos agrupados
 frame_agrupados = tk.Frame(ventana)
