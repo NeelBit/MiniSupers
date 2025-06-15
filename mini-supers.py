@@ -6,21 +6,21 @@ from idlelib.tooltip import Hovertip
 
 # Lista para guardar los productos
 lista_productos = [
-    {"producto": "Leche", "nombre": "La Serenísima", "precio": "1200"},
-    {"producto": "Pan", "nombre": "Baguette", "precio": "800"},
+    {"producto": "Leche", "nombre": "La Serenísima", "precio": "1500"},
+    {"producto": "Pan", "nombre": "Baguette", "precio": "1800"},
     {"producto": "Queso", "nombre": "Cremoso", "precio": "2500"},
-    {"producto": "Queso", "nombre": "Sardo", "precio": "3000"},
+    {"producto": "Queso", "nombre": "Sardo", "precio": "13000"},
     {"producto": "Galletitas", "nombre": "Pepitos", "precio": "600"},
     {"producto": "Galletitas", "nombre": "Chocolinas", "precio": "700"},
-    {"producto": "Gaseosa", "nombre": "Sprite", "precio": "500"},
-    {"producto": "Gaseosa", "nombre": "Cabalgata", "precio": "600"},
-    {"producto": "Gaseosa", "nombre": "Manaos", "precio": "500"},
+    {"producto": "Gaseosa", "nombre": "Sprite", "precio": "4000"},
+    {"producto": "Gaseosa", "nombre": "Cabalgata", "precio": "2600"},
+    {"producto": "Gaseosa", "nombre": "Manaos", "precio": "2500"},
     {"producto": "Cerveza", "nombre": "Quilmes", "precio": "3500"},
     {"producto": "Cerveza", "nombre": "Miller", "precio": "3700"},
-    {"producto": "Fideos", "nombre": "Maggie", "precio": "300"},
+    {"producto": "Fideos", "nombre": "Maggie", "precio": "2300"},
     {"producto": "Gaseosa", "nombre": "Coca Cola", "precio": "4000"},
-    {"producto": "Aceite", "nombre": "Girasol", "precio": "2500"},
-    {"producto": "Pan", "nombre": "Integral", "precio": "900"},
+    {"producto": "Aceite", "nombre": "Girasol", "precio": "5000"},
+    {"producto": "Pan", "nombre": "Integral", "precio": "3000"},
 ]
 contador_id = [1]  # Usamos una lista para que sea mutable dentro de la función
 
@@ -67,7 +67,7 @@ for prod in lista_productos:
         "",
         tk.END,
         iid=str(prod["id"]),
-        values=(prod["producto"], prod["nombre"], prod["precio"], "")
+        values=(prod["producto"], prod["nombre"], f"${prod["precio"]}", "")
     )
 
 # Permitir selección múltiple en la tabla: La selección multiple presionando Ctrl o Shift
@@ -131,7 +131,7 @@ def carga_nuevo_producto():
         "",
         tk.END,
         iid=str(id_producto),  # Usamos el id como iid
-        values=(producto, nombre, precio, "")
+        values=(producto, nombre, f"${precio}", "")
     )
 
     # Limpiar entradas
