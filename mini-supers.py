@@ -3,7 +3,6 @@ from tkinter import ttk, messagebox
 
 # Importamos la librería para los tooltips
 from idlelib.tooltip import Hovertip
-
 # Lista para guardar los productos
 lista_productos = [
     {"producto": "Leche", "nombre": "La Serenísima", "precio": "1200"},
@@ -97,8 +96,8 @@ tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
 
 # Defino la función carga nuevo producto
 def carga_nuevo_producto():
-    producto = entrada_producto.get().strip().title()
-    nombre = entrada_nombre.get().strip().title()
+    producto = entrada_producto.get().strip().title().capitalize()
+    nombre = entrada_nombre.get().strip().title().capitalize()
     precio = entrada_precio.get().strip()
 
     if not producto or not nombre or not precio:
@@ -236,7 +235,22 @@ limpiar_button.pack(side=tk.LEFT, padx=(0, 2), pady=2)
 Hovertip(limpiar_button, "Limpiar entrada de búsqueda", hover_delay=500)
 
 # Entrada de busqueda
-buscar_entrada = ttk.Entry(frame_busqueda, justify='center')
+buscar_entrada = ttk.Entry(frame_busqueda, justify='center', foreground="grey")
+buscar_entrada.placeholder = "Ingrese el producto que busca."
+buscar_entrada.insert(0, buscar_entrada.placeholder)
+
+def on_focus_in_busqueda(event):
+    if event.widget.get() == event.widget.placeholder:
+        event.widget.delete(0, tk.END)
+        event.widget.config(foreground="black")
+
+def on_focus_out_busqueda(event):
+    if not event.widget.get():
+        event.widget.insert(0, event.widget.placeholder)
+        event.widget.config(foreground="grey")
+
+buscar_entrada.bind("<FocusIn>", on_focus_in_busqueda)
+buscar_entrada.bind("<FocusOut>", on_focus_out_busqueda)
 buscar_entrada.pack(side=tk.LEFT, padx=10, pady=5)
 buscar_entrada.focus()
 
@@ -313,17 +327,39 @@ tk.Label(frame_ingreso, text="Nombre:").grid(row=0, column=1, sticky="w", padx=(
 tk.Label(frame_ingreso, text="Precio:").grid(row=0, column=3, sticky="w", padx=(5, 1))
 
 # En esta parte creamos cajitas para escribir los datos que se van a ingresar
-entrada_producto = tk.Entry(frame_ingreso, width=30, justify='left')
+def on_focus_in(event):
+    if event.widget.get() == event.widget.placeholder:
+        event.widget.delete(0, tk.END)
+        event.widget.config(fg="black")
+
+def on_focus_out(event):
+    if not event.widget.get():
+        event.widget.insert(0, event.widget.placeholder)
+        event.widget.config(fg="grey")
+
+entrada_producto = tk.Entry(frame_ingreso, width=30, justify='left', fg="grey")
+entrada_producto.placeholder = "Ingrese el tipo de producto (ej. Leche, Pan, Gaseosa)"
+entrada_producto.insert(0, entrada_producto.placeholder)
+entrada_producto.bind("<FocusIn>", on_focus_in)
+entrada_producto.bind("<FocusOut>", on_focus_out)
 entrada_producto.grid(row=1, column=0, padx=(5, 1))
 Hovertip(entrada_producto, "Ingrese el tipo de producto (ej. Leche, Pan, Gaseosa)", hover_delay=500)
 
-entrada_nombre = tk.Entry(frame_ingreso, width=30, justify='left')
+entrada_nombre = tk.Entry(frame_ingreso, width=30, justify='left', fg="grey")
+entrada_nombre.placeholder = "Ingrese la marca del producto"
+entrada_nombre.insert(0, entrada_nombre.placeholder)
+entrada_nombre.bind("<FocusIn>", on_focus_in)
+entrada_nombre.bind("<FocusOut>", on_focus_out)
 entrada_nombre.grid(row=1, column=1, padx=(5, 2))
 Hovertip(entrada_nombre, "Ingrese el nombre del producto (ej. La Serenísima, Baguette, Manaos)", hover_delay=500)
 # agreganos una etiqueta con el simbolo $ que se va a ubicar entre las entradas de nombre y precio.
 simbolo_peso = tk.Label(frame_ingreso, text="$").grid(row=1, column=2, sticky="w", padx=(5,0))
 
-entrada_precio = tk.Entry(frame_ingreso, width=15, justify= 'left')
+entrada_precio = tk.Entry(frame_ingreso, width=15, justify='left', fg="grey")
+entrada_precio.placeholder = "Ingrese el precio del producto"
+entrada_precio.insert(0, entrada_precio.placeholder)
+entrada_precio.bind("<FocusIn>", on_focus_in)
+entrada_precio.bind("<FocusOut>", on_focus_out)
 entrada_precio.grid(row=1, column=3, sticky='w', padx=(0, 2))
 Hovertip(entrada_precio, "Ingrese el precio del producto (ej. 1200)", hover_delay=500)
 
