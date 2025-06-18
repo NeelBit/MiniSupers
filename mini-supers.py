@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-
 # Importamos la librería para los tooltips
 from idlelib.tooltip import Hovertip
+
 # Lista para guardar los productos
 lista_productos = [
     {"producto": "Leche", "nombre": "La Serenísima", "precio": "1500"},
@@ -21,12 +21,14 @@ lista_productos = [
     {"producto": "Aceite", "nombre": "Girasol", "precio": "5000"},
     {"producto": "Pan", "nombre": "Integral", "precio": "3000"},
 ]
-contador_id = [1]  # Usamos una lista para que sea mutable dentro de la función
+
+# Usamos una lista para que sea mutable dentro de la función
+contador_id = [1]  
 
 # Creamos la ventanita
 ventana = tk.Tk()
 ventana.title('MiniSupers')
-ventana.geometry('600x600')  # Aumentamos la altura para que entre el nuevo panel
+ventana.geometry('700x600')  # Aumentamos la altura para que entre el nuevo panel
 
 # Icon
 ventana.iconbitmap("icon/icon1.ico")
@@ -98,7 +100,7 @@ def sincronizar_checks(event=None):
 tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
 
 # Defino la función carga nuevo producto
-def carga_nuevo_producto():
+def carga_nuevo_producto(event):
     producto = entrada_producto.get().strip().title().capitalize()
     nombre = entrada_nombre.get().strip().title().capitalize()
     precio = entrada_precio.get().strip()
@@ -137,6 +139,14 @@ def carga_nuevo_producto():
     entrada_producto.delete(0, tk.END)
     entrada_nombre.delete(0, tk.END)
     entrada_precio.delete(0, tk.END)
+
+    # Simula el evento focus out para mostrar el placeholder
+    for entrada in (entrada_producto, entrada_nombre, entrada_precio):
+        event = tk.Event()
+        event.widget = entrada
+        on_focus_out(event)
+
+    ventana.focus()
 
 # Cambia el estado de seleccionado en la lista y en la tabla
 def alternar_check(event):
@@ -206,7 +216,7 @@ seleccionamos el elemento del arból, con el método selection_add().
 '''
 def buscar_en_tabla(consulta):
     # No hace nada si la consulta está vacía
-    if not consulta:
+    if not consulta or consulta=="Ingrese el producto que busca." or not consulta.strip():
         return  
     else:
         items = tabla.get_children()
@@ -231,21 +241,30 @@ frame_busqueda = tk.Frame(ventana)
 frame_busqueda.pack(side=tk.TOP, padx=10, pady=5)
 
 # Botón para limpiar el entry de búsqueda
-limpiar_button = ttk.Button(frame_busqueda, text="❌", width=4, command=lambda: buscar_entrada.delete(0, tk.END))
+limpiar_button = ttk.Button(
+    frame_busqueda, 
+    text="❌", 
+    width=4, 
+    command=lambda: [buscar_entrada.delete(0, tk.END), buscar_entrada.focus_set()]
+)
 limpiar_button.pack(side=tk.LEFT, padx=(0, 2), pady=2)
 
 # Tooltip para el botón de limpiar
 Hovertip(limpiar_button, "Limpiar entrada de búsqueda", hover_delay=500)
 
 # Entrada de busqueda
-buscar_entrada = ttk.Entry(frame_busqueda, justify='center', foreground="grey")
+buscar_entrada = ttk.Entry(frame_busqueda, justify='center')
+buscar_entrada.config(foreground="grey")
 buscar_entrada.placeholder = "Ingrese el producto que busca."
 buscar_entrada.insert(0, buscar_entrada.placeholder)
 
 def on_focus_in_busqueda(event):
-    if event.widget.get() == event.widget.placeholder:
-        event.widget.delete(0, tk.END)
-        event.widget.config(foreground="black")
+    widget = event.widget
+        # Solo ejecuta si el widget es un Entry
+    if isinstance(widget, tk.Entry) or isinstance(widget, ttk.Entry):
+        if event.widget.get() == event.widget.placeholder:
+            event.widget.delete(0, tk.END)
+            event.widget.config(foreground="black")
 
 def on_focus_out_busqueda(event):
     if not event.widget.get():
@@ -367,7 +386,7 @@ entrada_precio.grid(row=1, column=3, sticky='w', padx=(0, 2))
 Hovertip(entrada_precio, "Ingrese el precio del producto (ej. 1200)", hover_delay=500)
 
 # Vincula la tecla "Enter" a la función carga_nuevo_producto con la entrada de precio
-entrada_precio.bind("<Return>", lambda event: carga_nuevo_producto())
+entrada_precio.bind("<Return>", lambda event: carga_nuevo_producto(event))
 
 # Esto hace que la columna del botón no se expanda
 frame_ingreso.grid_columnconfigure(4, weight=1)
@@ -378,6 +397,9 @@ boton_agregar.grid(row=1, column=4, padx=(5), sticky="w")
 
 # Tooltip para el botón de agregar
 Hovertip(boton_agregar, "Agregar nuevo producto. Rellene todos los campos", hover_delay=500)
+
+ventana.bind("<FocusIn>", on_focus_in)
+ventana.bind("<FocusIn>", on_focus_in_busqueda)
 
 # Mostramos la ventana
 ventana.mainloop()
