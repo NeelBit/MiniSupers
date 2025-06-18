@@ -580,7 +580,7 @@ entrada_precio.placeholder = "Ingrese el precio del producto"
 entrada_precio.insert(0, entrada_precio.placeholder)
 entrada_precio.bind("<FocusIn>", on_focus_in)
 entrada_precio.bind("<FocusOut>", on_focus_out)
-entrada_precio.grid(row=1, column=3, sticky='w', padx=10)
+entrada_precio.grid(row=1, column=3, sticky='w', padx=(0,10))
 Hovertip(entrada_precio, "Ingrese el precio del producto (ej. 1200)", hover_delay=500)
 
 # Vincula la tecla "Enter" a la función carga_nuevo_producto con la entrada de precio
