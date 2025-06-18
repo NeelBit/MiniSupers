@@ -100,7 +100,23 @@ def sincronizar_checks(event=None):
 tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
 
 # Defino la función carga nuevo producto
-def carga_nuevo_producto(event):
+def carga_nuevo_producto(event=None):
+    """
+    Agrega un nuevo producto a la lista de productos y a la tabla visual.
+
+    - Toma los valores de los campos de entrada (producto, nombre, precio).
+    - Valida que los campos no estén vacíos y que el precio sea un número.
+    - Genera un ID único para el producto.
+    - Guarda el producto en la lista 'lista_productos' con el campo 'seleccionado' en False.
+    - Inserta el producto en la tabla (Treeview) con el nuevo ID.
+    - Limpia los campos de entrada y muestra el placeholder si corresponde.
+
+    Parámetros:
+        event (tk.Event, opcional): Evento de Tkinter, se usa cuando la función es llamada desde un bind. Por defecto es None.
+
+    Retorna:
+        None
+    """
     producto = entrada_producto.get().strip().title().capitalize()
     nombre = entrada_nombre.get().strip().title().capitalize()
     precio = entrada_precio.get().strip()
@@ -150,6 +166,19 @@ def carga_nuevo_producto(event):
 
 # Cambia el estado de seleccionado en la lista y en la tabla
 def alternar_check(event):
+    """
+    Alterna el estado del check (✓) en la columna 'seleccionado' de la fila sobre la que se hizo doble clic.
+
+    - Detecta si el doble clic fue sobre la columna 'seleccionado' de la tabla.
+    - Marca o desmarca el check en la celda correspondiente.
+    - Actualiza el campo 'seleccionado' del producto en la lista 'lista_productos' para mantener la sincronización.
+
+    Parámetros:
+        event (tk.Event): Evento de Tkinter que contiene información sobre la posición del clic.
+
+    Retorna:
+        None
+    """
     # Obtiene el ID del item (fila) sobre el que se hizo doble clic, usando la posición vertical del mouse
     item_id = tabla.identify_row(event.y)
     # Obtiene la columna sobre la que se hizo doble clic, usando la posición horizontal del mouse
@@ -193,6 +222,20 @@ scroll.config(command=tabla.yview)
 
 # Definimos la función eliminar seleccionados
 def eliminar_seleccionados():
+    """
+    Elimina de la tabla y de la lista 'lista_productos' todos los productos que estén seleccionados y tengan el check (✓) en la columna 'seleccionado'.
+
+    - Recorre los elementos seleccionados en la tabla.
+    - Verifica si la columna 'seleccionado' está marcada con un check.
+    - Elimina esos productos tanto de la tabla visual como de la lista en memoria.
+    - Muestra un mensaje si no hay productos seleccionados.
+
+    Parámetros:
+        None
+
+    Retorna:
+        None
+    """
     seleccionados = tabla.selection()
     if not seleccionados:
         messagebox.showinfo("Eliminar", "No hay productos seleccionados.")
@@ -211,7 +254,8 @@ boton_eliminar.pack(pady=5)
 Hovertip(boton_eliminar, "Eliminar productos seleccionados", hover_delay=500)
 
 def buscar_en_tabla(consulta):
-    ''' definimos la función buscar en tabla, con un ciclo For. Con el método get_children(), que devuelve una tupla de identificadores 
+    ''' 
+    Definimos la función buscar en tabla, con un ciclo For. Con el método get_children(), que devuelve una tupla de identificadores 
     de elementos, luego iteramos esa tupla con el ciclo for y compararamos los valores asociados al item con la consulta. Si son iguales,
     seleccionamos el elemento del arból, con el método selection_add().
     '''
@@ -259,14 +303,36 @@ buscar_entrada.placeholder = "Ingrese el producto que busca."
 buscar_entrada.insert(0, buscar_entrada.placeholder)
 
 def on_focus_in_busqueda(event):
+    """
+    Maneja el evento cuando el Entry de búsqueda recibe el foco.
+
+    - Si el contenido del Entry es igual al placeholder, lo borra y cambia el color del texto a negro.
+
+    Parámetros:
+        event (tk.Event): Evento de Tkinter que contiene el widget que recibió el foco.
+
+    Retorna:
+        None
+    """
     widget = event.widget
-        # Solo ejecuta si el widget es un Entry
+    # Solo ejecuta si el widget es un Entry
     if isinstance(widget, tk.Entry) or isinstance(widget, ttk.Entry):
         if event.widget.get() == event.widget.placeholder:
             event.widget.delete(0, tk.END)
             event.widget.config(foreground="black")
 
 def on_focus_out_busqueda(event):
+    """
+    Maneja el evento cuando el Entry de búsqueda pierde el foco.
+
+    - Si el Entry está vacío, coloca el texto del placeholder y cambia el color del texto a gris.
+
+    Parámetros:
+        event (tk.Event): Evento de Tkinter que contiene el widget que perdió el foco.
+
+    Retorna:
+        None
+    """
     if not event.widget.get():
         event.widget.insert(0, event.widget.placeholder)
         event.widget.config(foreground="grey")
@@ -290,10 +356,12 @@ Hovertip(busqueda_button, "Buscar producto", hover_delay=500)
 buscar_entrada.bind("<Return>", lambda event: buscar_en_tabla(buscar_entrada.get()))
 
 def seleccionar_todos(event):
-    ''' La función seleccionar_todos utilizará los métodos identify(), para identificar la región del heading
-    e identify_column(), para identificar la columna seleccionado. Si el usuario hace click en el heading de la
-    columna 4, y existen elementos seleccionados, los va a deseleccionar con el método selection_remove(), y si
-    no existen elementos seleccionados va a seleccionar a todos los elementos de la tabla, con el método selection_add().  '''
+    ''' 
+    La función seleccionar_todos utilizará los métodos identify(), para identificar la región del heading
+    e identify_column(), para identificar la columna seleccionado. 
+    Si el usuario hace click en el heading de la columna 4, y existen elementos seleccionados, los va a deseleccionar con el método selection_remove(), y si
+    no existen elementos seleccionados va a seleccionar a todos los elementos de la tabla, con el método selection_add().  
+    '''
     region = tabla.identify("region", event.x, event.y)
     columna = tabla.identify_column(event.x)
     if region == "heading" and columna == '#4':
@@ -310,10 +378,12 @@ tabla.bind('<Button-1>', seleccionar_todos)
 
 # Cambio de nombre deel heading seleccionados cuando se posiciona el cursor del mouse en el heading.
 def cambiar_heading_seleccionados(event):
-    ''' La función cambiar_heading_seleccionados utilizará los métodos identify_region(), para identificar la región del heading
+    ''' 
+    La función cambiar_heading_seleccionados utilizará los métodos identify_region(), para identificar la región del heading
     e identify_column(), para identificar la columna seleccionado. Si el usuario posiciona el cursor del mouse en el heading de la
     columna 4, cambiaremos el nombre del heading por 'Seleccionar todos', y si sale el cursor de esa región
-    volvera a cambiar el nombre a '✓' '''
+    volvera a cambiar el nombre a '✓' 
+    '''
     region = tabla.identify_region(event.x, event.y)
     columna = tabla.identify_column(event.x)
     if region == "heading" and columna == '#4':
@@ -338,6 +408,18 @@ tree_agrupados.heading("#0", text="Productos por categoría")
 
 # Función para mostrar productos agrupados
 def mostrar_productos_agrupados():
+    """
+    Muestra una ventana emergente con los productos agrupados por tipo.
+
+    - Agrupa los productos de la lista 'lista_productos' según el campo 'producto'.
+    - Muestra en un cuadro de mensaje (messagebox) cada grupo con los nombres y precios de los productos correspondientes.
+
+    Parámetros:
+        None
+
+    Retorna:
+        None
+    """
     if frame_agrupados.winfo_ismapped():
         frame_agrupados.pack_forget()
         return
@@ -370,11 +452,33 @@ tk.Label(frame_ingreso, text="Precio:").grid(row=0, column=3, sticky="w", padx=(
 
 # En esta parte creamos cajitas para escribir los datos que se van a ingresar
 def on_focus_in(event):
+    """
+    Maneja el evento cuando un Entry recibe el foco.
+
+    - Si el contenido del Entry es igual al placeholder, lo borra y cambia el color del texto a negro.
+
+    Parámetros:
+        event (tk.Event): Evento de Tkinter que contiene el widget que recibió el foco.
+
+    Retorna:
+        None
+    """
     if event.widget.get() == event.widget.placeholder:
         event.widget.delete(0, tk.END)
         event.widget.config(fg="black")
 
 def on_focus_out(event):
+    """
+    Maneja el evento cuando un Entry pierde el foco.
+
+    - Si el Entry está vacío, coloca el texto del placeholder y cambia el color del texto a gris.
+
+    Parámetros:
+        event (tk.Event): Evento de Tkinter que contiene el widget que perdió el foco.
+
+    Retorna:
+        None
+    """
     if not event.widget.get():
         event.widget.insert(0, event.widget.placeholder)
         event.widget.config(fg="grey")
