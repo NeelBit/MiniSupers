@@ -33,7 +33,9 @@ ventana.geometry('700x600')  # Aumentamos la altura para que entre el nuevo pane
 # Icon
 ventana.iconbitmap("icon/icon1.ico")
 
-# Esto es el menú de arriba
+# ********************** BARRA DE MENÚ **********************
+
+# Creamos la barra de menú
 barra_menu = tk.Menu(ventana)
 ventana.config(menu=barra_menu)
 
@@ -46,6 +48,8 @@ menu_info.add_command(label="Quiénes somos")
 barra_menu.add_cascade(label="Productos", menu=menu_productos)
 barra_menu.add_cascade(label="Quiénes somos", menu=menu_info)
 
+# ********************** TABLA **********************
+
 # Este es el lugar donde va la tabla que muestra los productos
 frame_tabla = tk.Frame(ventana)
 frame_tabla.pack(expand=True, fill=tk.BOTH, padx=10, pady=5)
@@ -57,6 +61,8 @@ scroll.pack(side=tk.RIGHT, fill=tk.Y)
 # Con esto decimos que la tabla va a tener 4 columnas
 columnas = ('producto', 'nombre', 'precio', 'seleccionado')
 tabla = ttk.Treeview(frame_tabla, columns=columnas, show='headings', yscrollcommand=scroll.set)
+# Permitir selección múltiple en la tabla: La selección multiple presionando Ctrl o Shift
+tabla.config(selectmode="extended")
 
 # Sincroniza la lista de productos con la tabla al iniciar
 for prod in lista_productos:
@@ -71,9 +77,7 @@ for prod in lista_productos:
         values=(prod["producto"], prod["nombre"], f"${prod["precio"]}", "")
     )
 
-# Permitir selección múltiple en la tabla: La selección multiple presionando Ctrl o Shift
-tabla.config(selectmode="extended")
-
+# Función para sincronizar los checks de la tabla con la selección actual
 def sincronizar_checks(event=None):
     """
     Sincroniza la columna 'seleccionado' (check) de la tabla con la selección actual del usuario.
@@ -98,71 +102,6 @@ def sincronizar_checks(event=None):
         tabla.item(item, values=valores)
 
 tabla.bind("<<TreeviewSelect>>", sincronizar_checks)
-
-# Defino la función carga nuevo producto
-def carga_nuevo_producto(event=None):
-    """
-    Agrega un nuevo producto a la lista de productos y a la tabla visual.
-
-    - Toma los valores de los campos de entrada (producto, nombre, precio).
-    - Valida que los campos no estén vacíos y que el precio sea un número.
-    - Genera un ID único para el producto.
-    - Guarda el producto en la lista 'lista_productos' con el campo 'seleccionado' en False.
-    - Inserta el producto en la tabla (Treeview) con el nuevo ID.
-    - Limpia los campos de entrada y muestra el placeholder si corresponde.
-
-    Parámetros:
-        event (tk.Event, opcional): Evento de Tkinter, se usa cuando la función es llamada desde un bind. Por defecto es None.
-
-    Retorna:
-        None
-    """
-    producto = entrada_producto.get().strip().title().capitalize()
-    nombre = entrada_nombre.get().strip().title().capitalize()
-    precio = entrada_precio.get().strip()
-
-    if not producto or not nombre or not precio:
-        messagebox.showwarning("Campos vacíos", "Por favor complete todos los campos.")
-        return
-    try:
-        float(precio)
-    except ValueError:
-        messagebox.showwarning("Precio inválido", "El precio debe ser un número.")
-        return
-
-    id_producto = contador_id[0]
-    contador_id[0] += 1
-
-    # Guardar en la lista
-    nuevo = {
-        "id": id_producto,
-        "producto": producto,
-        "nombre": nombre,
-        "precio": precio,
-        "seleccionado": False
-    }
-    lista_productos.append(nuevo)
-
-    # Insertar en la tabla
-    tabla.insert(
-        "",
-        tk.END,
-        iid=str(id_producto),  # Usamos el id como iid
-        values=(producto, nombre, f"${precio}", "")
-    )
-
-    # Limpiar entradas
-    entrada_producto.delete(0, tk.END)
-    entrada_nombre.delete(0, tk.END)
-    entrada_precio.delete(0, tk.END)
-
-    # Simula el evento focus out para mostrar el placeholder
-    for entrada in (entrada_producto, entrada_nombre, entrada_precio):
-        event = tk.Event()
-        event.widget = entrada
-        on_focus_out(event)
-
-    ventana.focus()
 
 # Cambia el estado de seleccionado en la lista y en la tabla
 def alternar_check(event):
@@ -220,6 +159,8 @@ tabla.column('seleccionado', width=90, anchor='center')
 tabla.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 scroll.config(command=tabla.yview)
 
+# ********************** FILA SELECCIONADOS Y ELIMINAR **********************
+
 # Crea un frame para agrupar el label y el botón
 frame_acciones = tk.Frame(ventana)
 frame_acciones.pack(fill=tk.X, padx=10, pady=5)
@@ -271,9 +212,10 @@ def eliminar_seleccionados():
 # Este es el botón para eliminar productos
 boton_eliminar = tk.Button(frame_acciones, text="Eliminar", bg="#ffdddd", command=eliminar_seleccionados)
 boton_eliminar.pack(side=tk.TOP)
-
 # Tooltip para el botón de eliminar
 Hovertip(boton_eliminar, "Eliminar productos seleccionados", hover_delay=500)
+
+# ******** FILA DE BÚSQUEDA ********
 
 def buscar_en_tabla(consulta):
     ''' 
@@ -314,8 +256,8 @@ limpiar_button = ttk.Button(
     width=2, 
     command=lambda: [buscar_entrada.delete(0, tk.END), buscar_entrada.focus_set()]
 )
-limpiar_button.pack(side=tk.LEFT)
 
+limpiar_button.pack(side=tk.LEFT)
 # Tooltip para el botón de limpiar
 Hovertip(limpiar_button, "Limpiar entrada de búsqueda", hover_delay=500)
 
@@ -364,19 +306,19 @@ buscar_entrada.bind("<FocusIn>", on_focus_in_busqueda)
 buscar_entrada.bind("<FocusOut>", on_focus_out_busqueda)
 buscar_entrada.pack(side=tk.LEFT, padx=10, pady=5)
 buscar_entrada.focus()
-
 # Tooltip para la entrada de búsqueda
 Hovertip(buscar_entrada, "¿Qué producto busca?", hover_delay=500)
 
 # Boton de busqueda
 busqueda_button = ttk.Button(frame_busqueda, text="Buscar", command=lambda: buscar_en_tabla(buscar_entrada.get()))
 busqueda_button.pack(side=tk.LEFT, padx=10, pady=5)
-
 # Tooltip para el botón de búsqueda
 Hovertip(busqueda_button, "Buscar producto", hover_delay=500)
 
 # Vincula la tecla "Enter" a la función buscar_en_tabla con buscar_entrada
 buscar_entrada.bind("<Return>", lambda event: buscar_en_tabla(buscar_entrada.get()))
+
+# ********************** EVENTOS/BTNs DE LA TABLA **********************
 
 def seleccionar_todos(event):
     ''' 
@@ -421,6 +363,113 @@ def cambiar_heading_seleccionados(event):
 # Con el método bind vinculará el evento '<Motion>' del cursor del mouse, con la función cambiar_heading_seleccionados.
 tabla.bind('<Motion>',cambiar_heading_seleccionados)
 
+# Ordenamiento de la tabla por columna 'producto'
+def ordenar_columna_producto():
+    """
+    Ordena la tabla por la columna 'producto' de forma ascendente o descendente.
+
+    - Obtiene todos los elementos de la tabla y sus valores en la columna 'producto'.
+    - Ordena los elementos alfabéticamente según el sentido actual (ascendente o descendente).
+    - Reordena visualmente las filas en la tabla.
+    - Alterna el sentido de ordenamiento para la próxima vez que se presione el encabezado.
+
+    Parámetros:
+        None
+
+    Retorna:
+        None
+    """
+    # Obtiene todos los items de la tabla
+    items = tabla.get_children()
+    # Obtiene los valores de la columna 'producto' y los ids
+    datos = [(tabla.set(item, 'producto'), item) for item in items]
+    # Alterna el sentido de ordenamiento usando un atributo en la tabla
+    sentido = getattr(tabla, 'orden_producto_asc', True)
+    # Ordena los datos
+    datos.sort(reverse=not sentido)
+    # Reordena los items en la tabla
+    for index, (valor, item) in enumerate(datos):
+        tabla.move(item, '', index)
+    # Cambia el sentido para la próxima vez
+    tabla.orden_producto_asc = not sentido
+
+tabla.heading('producto', text='Producto', command=ordenar_columna_producto)
+
+# Ordenamiento de la tabla por columna 'nombre'
+def ordenar_columna_nombre():
+    """
+    Ordena la tabla por la columna 'nombre' de forma ascendente o descendente.
+
+    - Obtiene todos los elementos de la tabla y sus valores en la columna 'nombre'.
+    - Ordena los elementos alfabéticamente según el sentido actual (ascendente o descendente).
+    - Reordena visualmente las filas en la tabla.
+    - Alterna el sentido de ordenamiento para la próxima vez que se presione el encabezado.
+
+    Parámetros:
+        None
+
+    Retorna:
+        None
+    """
+    # Obtiene todos los items de la tabla
+    items = tabla.get_children()
+    # Obtiene los valores de la columna 'nombre' y los ids
+    datos = [(tabla.set(item, 'nombre'), item) for item in items]
+    # Alterna el sentido de ordenamiento usando un atributo en la tabla
+    sentido = getattr(tabla, 'orden_nombre_asc', True)
+    # Ordena los datos
+    datos.sort(reverse=not sentido)
+    # Reordena los items en la tabla
+    for index, (valor, item) in enumerate(datos):
+        tabla.move(item, '', index)
+    # Cambia el sentido para la próxima vez
+    tabla.orden_nombre_asc = not sentido
+
+tabla.heading('nombre', text='Nombre', command=ordenar_columna_nombre)
+
+# Ordenamiento de la tabla por columna 'precio'
+def ordenar_columna_precio():
+    """
+    Ordena la tabla por la columna 'precio' de forma ascendente o descendente.
+
+    - Obtiene todos los elementos de la tabla y sus valores en la columna 'precio'.
+    - Convierte los valores de precio a números para ordenar correctamente.
+    - Ordena los elementos numéricamente según el sentido actual (ascendente o descendente).
+    - Reordena visualmente las filas en la tabla.
+    - Alterna el sentido de ordenamiento para la próxima vez que se presione el encabezado.
+
+    Parámetros:
+        None
+
+    Retorna:
+        None
+    """
+    # Obtiene todos los items de la tabla
+    items = tabla.get_children()
+    # Obtiene los valores de la columna 'precio' y los ids, convirtiendo el precio a float/int para ordenar correctamente
+    datos = []
+    for item in items:
+        valor = tabla.set(item, 'precio')
+        # Elimina el símbolo $ si lo tiene y convierte a float
+        try:
+            valor_num = float(str(valor).replace("$", "").replace(",", "."))
+        except ValueError:
+            valor_num = 0
+        datos.append((valor_num, item))
+    # Alterna el sentido de ordenamiento usando un atributo en la tabla
+    sentido = getattr(tabla, 'orden_precio_asc', True)
+    # Ordena los datos numéricamente
+    datos.sort(reverse=not sentido)
+    # Reordena los items en la tabla
+    for index, (valor, item) in enumerate(datos):
+        tabla.move(item, '', index)
+    # Cambia el sentido para la próxima vez
+    tabla.orden_precio_asc = not sentido
+
+tabla.heading('precio', text='Precio', command=ordenar_columna_precio)
+
+# ******** PRODUCTOS AGRUPADOS ********
+
 # Frame para ver productos agrupados
 frame_agrupados = tk.Frame(ventana)
 frame_agrupados.pack_forget()  # Oculto al inicio
@@ -463,6 +512,8 @@ def mostrar_productos_agrupados():
             tree_agrupados.insert(nodo, "end", text=f"{item['nombre']} - ${item['precio']}")
 
     frame_agrupados.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+# ******** INGRESO DE PRODUCTOS ********
 
 # (Frame = Caja) Aquí va la parte de abajo donde escribís los datos
 frame_ingreso = tk.Frame(ventana)
@@ -537,6 +588,71 @@ entrada_precio.bind("<Return>", lambda event: carga_nuevo_producto(event))
 
 # Esto hace que la columna del botón no se expanda
 frame_ingreso.grid_columnconfigure(4, weight=1)
+
+# Defino la función carga nuevo producto
+def carga_nuevo_producto(event=None):
+    """
+    Agrega un nuevo producto a la lista de productos y a la tabla visual.
+
+    - Toma los valores de los campos de entrada (producto, nombre, precio).
+    - Valida que los campos no estén vacíos y que el precio sea un número.
+    - Genera un ID único para el producto.
+    - Guarda el producto en la lista 'lista_productos' con el campo 'seleccionado' en False.
+    - Inserta el producto en la tabla (Treeview) con el nuevo ID.
+    - Limpia los campos de entrada y muestra el placeholder si corresponde.
+
+    Parámetros:
+        event (tk.Event, opcional): Evento de Tkinter, se usa cuando la función es llamada desde un bind. Por defecto es None.
+
+    Retorna:
+        None
+    """
+    producto = entrada_producto.get().strip().title().capitalize()
+    nombre = entrada_nombre.get().strip().title().capitalize()
+    precio = entrada_precio.get().strip()
+
+    if not producto or not nombre or not precio:
+        messagebox.showwarning("Campos vacíos", "Por favor complete todos los campos.")
+        return
+    try:
+        float(precio)
+    except ValueError:
+        messagebox.showwarning("Precio inválido", "El precio debe ser un número.")
+        return
+
+    id_producto = contador_id[0]
+    contador_id[0] += 1
+
+    # Guardar en la lista
+    nuevo = {
+        "id": id_producto,
+        "producto": producto,
+        "nombre": nombre,
+        "precio": precio,
+        "seleccionado": False
+    }
+    lista_productos.append(nuevo)
+
+    # Insertar en la tabla
+    tabla.insert(
+        "",
+        tk.END,
+        iid=str(id_producto),  # Usamos el id como iid
+        values=(producto, nombre, f"${precio}", "")
+    )
+
+    # Limpiar entradas
+    entrada_producto.delete(0, tk.END)
+    entrada_nombre.delete(0, tk.END)
+    entrada_precio.delete(0, tk.END)
+
+    # Simula el evento focus out para mostrar el placeholder
+    for entrada in (entrada_producto, entrada_nombre, entrada_precio):
+        event = tk.Event()
+        event.widget = entrada
+        on_focus_out(event)
+
+    ventana.focus()
 
 # Este es el botón para agregar el producto
 boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd", command=carga_nuevo_producto, justify='left')
