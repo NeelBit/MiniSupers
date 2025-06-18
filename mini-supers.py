@@ -191,7 +191,7 @@ tabla.column('seleccionado', width=90, anchor='center')
 tabla.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 scroll.config(command=tabla.yview)
 
-#Definimos la función eliminar seleccionados
+# Definimos la función eliminar seleccionados
 def eliminar_seleccionados():
     seleccionados = tabla.selection()
     if not seleccionados:
@@ -212,9 +212,9 @@ Hovertip(boton_eliminar, "Eliminar productos seleccionados", hover_delay=500)
 
 def buscar_en_tabla(consulta):
     ''' definimos la función buscar en tabla, con un ciclo For. Con el método get_children(), que devuelve una tupla de identificadores 
-de elementos, luego iteramos esa tupla con el ciclo for y compararamos los valores asociados al item con la consulta. Si son iguales,
-seleccionamos el elemento del arból, con el método selection_add().
-'''
+    de elementos, luego iteramos esa tupla con el ciclo for y compararamos los valores asociados al item con la consulta. Si son iguales,
+    seleccionamos el elemento del arból, con el método selection_add().
+    '''
     # No hace nada si la consulta está vacía
     if not consulta or consulta=="Ingrese el producto que busca." or not consulta.strip():
         return  
@@ -325,10 +325,10 @@ def cambiar_heading_seleccionados(event):
             pass
     else:
         tabla.heading('seleccionado', text='✓')
-#Con el método bind vinculará el evento '<Motion>' del cursor del mouse, con la función cambiar_heading_seleccionados.
+# Con el método bind vinculará el evento '<Motion>' del cursor del mouse, con la función cambiar_heading_seleccionados.
 tabla.bind('<Motion>',cambiar_heading_seleccionados)
 
-# NUEVO: Frame para ver productos agrupados
+# Frame para ver productos agrupados
 frame_agrupados = tk.Frame(ventana)
 frame_agrupados.pack_forget()  # Oculto al inicio
 
@@ -418,6 +418,7 @@ boton_agregar.grid(row=1, column=4, padx=(5), sticky="w")
 # Tooltip para el botón de agregar
 Hovertip(boton_agregar, "Agregar nuevo producto. Rellene todos los campos", hover_delay=500)
 
+# Que al seleccionar un campo, aparezca el placeholder
 ventana.bind("<FocusIn>", on_focus_in)
 ventana.bind("<FocusIn>", on_focus_in_busqueda)
 
