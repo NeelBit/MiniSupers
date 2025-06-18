@@ -468,7 +468,7 @@ def ordenar_columna_precio():
 
 tabla.heading('precio', text='Precio', command=ordenar_columna_precio)
 
-# ******** PRODUCTOS AGRUPADOS ********
+# **************** PRODUCTOS AGRUPADOS ****************
 
 # Frame para ver productos agrupados
 frame_agrupados = tk.Frame(ventana)
@@ -513,7 +513,7 @@ def mostrar_productos_agrupados():
 
     frame_agrupados.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
-# ******** INGRESO DE PRODUCTOS ********
+# **************** INGRESO DE PRODUCTOS ****************
 
 # (Frame = Caja) Aquí va la parte de abajo donde escribís los datos
 frame_ingreso = tk.Frame(ventana)
@@ -657,7 +657,6 @@ def carga_nuevo_producto(event=None):
 # Este es el botón para agregar el producto
 boton_agregar = tk.Button(frame_ingreso, text="Agregar",width=15, bg="#ddffdd", command=carga_nuevo_producto, justify='center')
 boton_agregar.grid(row=1, column=4, padx=(5), sticky="e")
-
 # Tooltip para el botón de agregar
 Hovertip(boton_agregar, "Agregar nuevo producto. Rellene todos los campos", hover_delay=500)
 
