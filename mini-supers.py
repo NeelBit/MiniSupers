@@ -28,7 +28,7 @@ contador_id = [1]
 # Creamos la ventanita
 ventana = tk.Tk()
 ventana.title('MiniSupers')
-ventana.geometry('720x600')  # Aumentamos la altura para que entre el nuevo panel
+ventana.geometry('780x600')  # Aumentamos la altura para que entre el nuevo panel
 
 # Icon
 ventana.iconbitmap("icon/icon1.ico")
@@ -557,30 +557,30 @@ def on_focus_out(event):
         event.widget.insert(0, event.widget.placeholder)
         event.widget.config(fg="grey")
 
-entrada_producto = tk.Entry(frame_ingreso, width=30, justify='left', fg="grey")
+entrada_producto = tk.Entry(frame_ingreso, width=30, justify='center', fg="grey")
 entrada_producto.placeholder = "Ingrese el tipo de producto (ej. Leche, Pan, Gaseosa)"
 entrada_producto.insert(0, entrada_producto.placeholder)
 entrada_producto.bind("<FocusIn>", on_focus_in)
 entrada_producto.bind("<FocusOut>", on_focus_out)
-entrada_producto.grid(row=1, column=0, padx=(5, 1))
+entrada_producto.grid(row=1, column=0, padx=10)
 Hovertip(entrada_producto, "Ingrese el tipo de producto (ej. Leche, Pan, Gaseosa)", hover_delay=500)
 
-entrada_nombre = tk.Entry(frame_ingreso, width=30, justify='left', fg="grey")
+entrada_nombre = tk.Entry(frame_ingreso, width=30, justify='center', fg="grey")
 entrada_nombre.placeholder = "Ingrese la marca del producto"
 entrada_nombre.insert(0, entrada_nombre.placeholder)
 entrada_nombre.bind("<FocusIn>", on_focus_in)
 entrada_nombre.bind("<FocusOut>", on_focus_out)
-entrada_nombre.grid(row=1, column=1, padx=(5, 2))
+entrada_nombre.grid(row=1, column=1, padx=10)
 Hovertip(entrada_nombre, "Ingrese el nombre del producto (ej. La Serenísima, Baguette, Manaos)", hover_delay=500)
 # agregamos una etiqueta con el simbolo $ que se va a ubicar entre las entradas de nombre y precio.
 simbolo_peso = tk.Label(frame_ingreso, text="$").grid(row=1, column=2, sticky="w", padx=(5,0))
 
-entrada_precio = tk.Entry(frame_ingreso, width=15, justify='left', fg="grey")
+entrada_precio = tk.Entry(frame_ingreso, width=15, justify='center', fg="grey")
 entrada_precio.placeholder = "Ingrese el precio del producto"
 entrada_precio.insert(0, entrada_precio.placeholder)
 entrada_precio.bind("<FocusIn>", on_focus_in)
 entrada_precio.bind("<FocusOut>", on_focus_out)
-entrada_precio.grid(row=1, column=3, sticky='w', padx=(0, 2))
+entrada_precio.grid(row=1, column=3, sticky='w', padx=10)
 Hovertip(entrada_precio, "Ingrese el precio del producto (ej. 1200)", hover_delay=500)
 
 # Vincula la tecla "Enter" a la función carga_nuevo_producto con la entrada de precio
@@ -655,7 +655,7 @@ def carga_nuevo_producto(event=None):
     ventana.focus()
 
 # Este es el botón para agregar el producto
-boton_agregar = tk.Button(frame_ingreso, text="Agregar",width=15, bg="#ddffdd", command=carga_nuevo_producto, justify='left')
+boton_agregar = tk.Button(frame_ingreso, text="Agregar",width=15, bg="#ddffdd", command=carga_nuevo_producto, justify='center')
 boton_agregar.grid(row=1, column=4, padx=(5), sticky="e")
 
 # Tooltip para el botón de agregar
