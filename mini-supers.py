@@ -220,6 +220,28 @@ tabla.column('seleccionado', width=90, anchor='center')
 tabla.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 scroll.config(command=tabla.yview)
 
+# Crea un frame para agrupar el label y el botón
+frame_acciones = tk.Frame(ventana)
+frame_acciones.pack(fill=tk.X, padx=10, pady=5)
+
+# Label de seleccionados
+label_seleccionados = tk.Label(frame_acciones, text="No hay productos seleccionados.")
+label_seleccionados.pack(side=tk.LEFT, padx=(0, 10))
+
+def actualizar_label_seleccionados(event=None):
+    cantidad = len(tabla.selection())
+    label_seleccionados.config(text=(
+            "No hay productos seleccionados."
+            if cantidad == 0 else
+            f"Seleccionado: {cantidad} producto."
+            if cantidad == 1 else
+            f"Seleccionados: {cantidad} productos."
+        )
+    )
+
+# Asociar la función al evento de selección de la tabla
+tabla.bind("<<TreeviewSelect>>", actualizar_label_seleccionados)
+
 # Definimos la función eliminar seleccionados
 def eliminar_seleccionados():
     """
@@ -247,8 +269,8 @@ def eliminar_seleccionados():
             lista_productos[:] = [prod for prod in lista_productos if str(prod["id"]) != item_id]
 
 # Este es el botón para eliminar productos
-boton_eliminar = tk.Button(ventana, text="Eliminar", bg="#ffdddd", command=eliminar_seleccionados)
-boton_eliminar.pack(pady=5)
+boton_eliminar = tk.Button(frame_acciones, text="Eliminar", bg="#ffdddd", command=eliminar_seleccionados)
+boton_eliminar.pack(side=tk.TOP)
 
 # Tooltip para el botón de eliminar
 Hovertip(boton_eliminar, "Eliminar productos seleccionados", hover_delay=500)
