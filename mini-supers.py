@@ -523,7 +523,7 @@ frame_ingreso.pack(fill=tk.X, side=tk.BOTTOM, padx=10, pady=10)
 label_font = ("Arial", 10, "bold")
 tk.Label(frame_ingreso,font=label_font, text="Producto:").grid(row=0, column=0, sticky="w", padx=(5, 5), pady=(0, 2))
 tk.Label(frame_ingreso,font=label_font, text="Nombre:").grid(row=0, column=1, sticky="w", padx=(5, 5), pady=(0, 2))
-tk.Label(frame_ingreso,font=label_font, text="Precio:").grid(row=0, column=3, sticky="w", padx=(5, 5), pady=(0, 2))
+tk.Label(frame_ingreso,font=label_font, text="Precio:").grid(row=0, column=3, sticky="w", padx=(0, 0), pady=(0, 0))
 
 # En esta parte creamos cajitas para escribir los datos que se van a ingresar
 def on_focus_in(event):
