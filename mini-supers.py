@@ -261,6 +261,7 @@ def buscar_en_tabla(consulta):
     '''
     # No hace nada si la consulta está vacía
     if not consulta or consulta=="Ingrese el producto que busca." or not consulta.strip():
+        messagebox.showinfo("Buscar", "Por favor ingrese un producto a buscar.")
         return  
     else:
         items = tabla.get_children()
