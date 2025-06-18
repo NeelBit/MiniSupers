@@ -288,11 +288,11 @@ frame_busqueda.pack(side=tk.TOP, padx=10, pady=5)
 # Botón para limpiar el entry de búsqueda
 limpiar_button = ttk.Button(
     frame_busqueda, 
-    text="❌", 
-    width=4, 
+    text="x", 
+    width=2, 
     command=lambda: [buscar_entrada.delete(0, tk.END), buscar_entrada.focus_set()]
 )
-limpiar_button.pack(side=tk.LEFT, padx=(0, 2), pady=2)
+limpiar_button.pack(side=tk.LEFT)
 
 # Tooltip para el botón de limpiar
 Hovertip(limpiar_button, "Limpiar entrada de búsqueda", hover_delay=500)
