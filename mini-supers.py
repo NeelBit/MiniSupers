@@ -210,8 +210,8 @@ def eliminar_seleccionados():
             lista_productos[:] = [prod for prod in lista_productos if str(prod["id"]) != item_id]
 
 # Este es el botón para eliminar productos
-boton_eliminar = tk.Button(frame_acciones, text="Eliminar", bg="#ffdddd", command=eliminar_seleccionados)
-boton_eliminar.pack(side=tk.TOP)
+boton_eliminar = tk.Button(frame_acciones, text="Eliminar",width=15, bg="#ffdddd", command=eliminar_seleccionados)
+boton_eliminar.pack(side=tk.RIGHT, padx=(0, 10))
 # Tooltip para el botón de eliminar
 Hovertip(boton_eliminar, "Eliminar productos seleccionados", hover_delay=500)
 
@@ -310,7 +310,7 @@ buscar_entrada.focus()
 Hovertip(buscar_entrada, "¿Qué producto busca?", hover_delay=500)
 
 # Boton de busqueda
-busqueda_button = ttk.Button(frame_busqueda, text="Buscar", command=lambda: buscar_en_tabla(buscar_entrada.get()))
+busqueda_button = ttk.Button(frame_busqueda, text="Buscar", width=15, command=lambda: buscar_en_tabla(buscar_entrada.get()))
 busqueda_button.pack(side=tk.LEFT, padx=10, pady=5)
 # Tooltip para el botón de búsqueda
 Hovertip(busqueda_button, "Buscar producto", hover_delay=500)
@@ -655,8 +655,8 @@ def carga_nuevo_producto(event=None):
     ventana.focus()
 
 # Este es el botón para agregar el producto
-boton_agregar = tk.Button(frame_ingreso, text="Agregar", bg="#ddffdd", command=carga_nuevo_producto, justify='left')
-boton_agregar.grid(row=1, column=4, padx=(5), sticky="w")
+boton_agregar = tk.Button(frame_ingreso, text="Agregar",width=15, bg="#ddffdd", command=carga_nuevo_producto, justify='left')
+boton_agregar.grid(row=1, column=4, padx=(5), sticky="e")
 
 # Tooltip para el botón de agregar
 Hovertip(boton_agregar, "Agregar nuevo producto. Rellene todos los campos", hover_delay=500)
