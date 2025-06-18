@@ -183,10 +183,10 @@ tabla.heading('precio', text='Precio')
 tabla.heading('seleccionado', text='✓')
 
 # Esto es para darle un tamaño a cada columna
-tabla.column('producto', width=150)
-tabla.column('nombre', width=150)
+tabla.column('producto', width=130)
+tabla.column('nombre', width=130)
 tabla.column('precio', width=100)
-tabla.column('seleccionado', width=50, anchor='center')
+tabla.column('seleccionado', width=90, anchor='center')
 
 tabla.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 scroll.config(command=tabla.yview)
@@ -210,11 +210,11 @@ boton_eliminar.pack(pady=5)
 # Tooltip para el botón de eliminar
 Hovertip(boton_eliminar, "Eliminar productos seleccionados", hover_delay=500)
 
-''' definimos la función buscar en tabla, con un ciclo For. Con el método get_children(), que devuelve una tupla de identificadores 
+def buscar_en_tabla(consulta):
+    ''' definimos la función buscar en tabla, con un ciclo For. Con el método get_children(), que devuelve una tupla de identificadores 
 de elementos, luego iteramos esa tupla con el ciclo for y compararamos los valores asociados al item con la consulta. Si son iguales,
 seleccionamos el elemento del arból, con el método selection_add().
 '''
-def buscar_en_tabla(consulta):
     # No hace nada si la consulta está vacía
     if not consulta or consulta=="Ingrese el producto que busca." or not consulta.strip():
         return  
@@ -308,6 +308,26 @@ def seleccionar_todos(event):
 
 tabla.bind('<Button-1>', seleccionar_todos)
 
+# Cambio de nombre deel heading seleccionados cuando se posiciona el cursor del mouse en el heading.
+def cambiar_heading_seleccionados(event):
+    ''' La función cambiar_heading_seleccionados utilizará los métodos identify_region(), para identificar la región del heading
+    e identify_column(), para identificar la columna seleccionado. Si el usuario posiciona el cursor del mouse en el heading de la
+    columna 4, cambiaremos el nombre del heading por 'Seleccionar todos', y si sale el cursor de esa región
+    volvera a cambiar el nombre a '✓' '''
+    region = tabla.identify_region(event.x, event.y)
+    columna = tabla.identify_column(event.x)
+    if region == "heading" and columna == '#4':
+        if tabla.selection():
+            tabla.heading('seleccionado', text='Deseleccionar todo', anchor="center")
+            pass
+        else:
+            tabla.heading('seleccionado', text='Seleccionar todo', anchor="center")
+            pass
+    else:
+        tabla.heading('seleccionado', text='✓')
+#Con el método bind vinculará el evento '<Motion>' del cursor del mouse, con la función cambiar_heading_seleccionados.
+tabla.bind('<Motion>',cambiar_heading_seleccionados)
+
 # NUEVO: Frame para ver productos agrupados
 frame_agrupados = tk.Frame(ventana)
 frame_agrupados.pack_forget()  # Oculto al inicio
@@ -374,7 +394,7 @@ entrada_nombre.bind("<FocusIn>", on_focus_in)
 entrada_nombre.bind("<FocusOut>", on_focus_out)
 entrada_nombre.grid(row=1, column=1, padx=(5, 2))
 Hovertip(entrada_nombre, "Ingrese el nombre del producto (ej. La Serenísima, Baguette, Manaos)", hover_delay=500)
-# agreganos una etiqueta con el simbolo $ que se va a ubicar entre las entradas de nombre y precio.
+# agregamos una etiqueta con el simbolo $ que se va a ubicar entre las entradas de nombre y precio.
 simbolo_peso = tk.Label(frame_ingreso, text="$").grid(row=1, column=2, sticky="w", padx=(5,0))
 
 entrada_precio = tk.Entry(frame_ingreso, width=15, justify='left', fg="grey")
