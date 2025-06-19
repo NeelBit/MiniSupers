@@ -170,6 +170,7 @@ label_seleccionados = tk.Label(frame_acciones, text="No hay productos selecciona
 label_seleccionados.pack(side=tk.LEFT, padx=(0, 10))
 
 def actualizar_label_seleccionados(event=None):
+    sincronizar_checks()
     cantidad = len(tabla.selection())
     label_seleccionados.config(text=(
             "No hay productos seleccionados."
@@ -338,6 +339,9 @@ def seleccionar_todos(event):
             for item in items:  
                 tabla.selection_add(item)
                 tabla.focus(item)
+
+        # Llama manualmente a la función para actualizar el label
+        actualizar_label_seleccionados()
 
 tabla.bind('<Button-1>', seleccionar_todos)
 
