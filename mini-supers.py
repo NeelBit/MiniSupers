@@ -39,11 +39,58 @@ ventana.iconbitmap("icon/icon1.ico")
 barra_menu = tk.Menu(ventana)
 ventana.config(menu=barra_menu)
 
+# Funcionalidad de "Quiénes somos"
+def mostrar_quienes_somos():
+    if frame_agrupados.winfo_ismapped():
+        frame_agrupados.pack_forget()
+
+    ventana_info = tk.Toplevel(ventana)
+    ventana_info.title("Quiénes somos - MiniSupers")
+    ventana_info.resizable(False, False)
+    ventana_info.transient(ventana)
+    ventana_info.grab_set()
+
+    # Centrar la ventana respecto a la ventana principal
+    ancho, alto = 500, 400
+    ventana.update_idletasks()
+    x_principal = ventana.winfo_x()
+    y_principal = ventana.winfo_y()
+    ancho_principal = ventana.winfo_width()
+    alto_principal = ventana.winfo_height()
+    x = x_principal + (ancho_principal // 2) - (ancho // 2)
+    y = y_principal + (alto_principal // 2) - (alto // 2)
+    ventana_info.geometry(f"{ancho}x{alto}+{x}+{y}")
+
+    frame_contenido = tk.Frame(ventana_info, padx=20, pady=20)
+    frame_contenido.pack(fill=tk.BOTH, expand=True)
+
+    titulo = tk.Label(frame_contenido, text="¿Quiénes somos?", font=("Arial", 16, "bold"))
+    titulo.pack(pady=(0, 20))
+
+    texto_info = """MiniSupers es una aplicación de gestión de inventario desarrollada para pequeños supermercados y comercios.
+
+Nuestra misión es facilitar el control y administración de productos, permitiendo:
+
+• Agregar y eliminar productos fácilmente
+• Buscar productos de manera eficiente
+• Organizar productos por categorías
+• Mantener un control de precios actualizado
+
+Desarrollado con Python y Tkinter, MiniSupers ofrece una interfaz intuitiva y funcional para la gestión diaria de tu negocio.
+
+¡Gracias por confiar en MiniSupers para tu gestión de inventario!"""
+
+    texto_label = tk.Label(frame_contenido, text=texto_info, justify=tk.LEFT, wraplength=450, font=("Arial", 10))
+    texto_label.pack(pady=(0, 20))
+
+    boton_cerrar = tk.Button(frame_contenido, text="Cerrar", command=ventana_info.destroy, bg="#dddddd", width=15)
+    boton_cerrar.pack()
+
 menu_productos = tk.Menu(barra_menu, tearoff=0)
 menu_productos.add_command(label="Ver productos", command=lambda: mostrar_productos_agrupados())
 
 menu_info = tk.Menu(barra_menu, tearoff=0)
-menu_info.add_command(label="Quiénes somos")
+menu_info.add_command(label="Quiénes somos", command=mostrar_quienes_somos)
 
 barra_menu.add_cascade(label="Productos", menu=menu_productos)
 barra_menu.add_cascade(label="Quiénes somos", menu=menu_info)
