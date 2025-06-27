@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, Scrollbar
 # Importamos la librería para los tooltips
 from idlelib.tooltip import Hovertip
 
@@ -526,6 +526,9 @@ frame_agrupados = tk.Frame(ventana)
 frame_agrupados.pack_forget()  # Oculto al inicio
 
 tree_agrupados = ttk.Treeview(frame_agrupados)
+scrollbar=ttk.Scrollbar(tree_agrupados, orient='vertical', command=tree_agrupados.yview)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+tree_agrupados['yscrollcommand']=scrollbar.set
 tree_agrupados.pack(fill=tk.BOTH, expand=True)
 tree_agrupados.heading("#0", text="Productos por categoría")
 
