@@ -329,10 +329,9 @@ def on_focus_in(event):
     """
     widget = event.widget
     # Solo ejecuta si el widget es un Entry
-    if isinstance(widget, tk.Entry) or isinstance(widget, ttk.Entry):
-        if event.widget.get() == event.widget.placeholder:
-            event.widget.delete(0, tk.END)
-            event.widget.config(foreground="black")
+    if event.widget.get() == event.widget.placeholder:
+        event.widget.delete(0, tk.END)
+        event.widget.config(foreground="black")
 
 def on_focus_out(event):
     """
@@ -685,10 +684,6 @@ boton_agregar = tk.Button(frame_ingreso, text="Agregar",width=15, bg="#ddffdd", 
 boton_agregar.grid(row=1, column=4, padx=(5), sticky="e")
 # Tooltip para el botón de agregar
 Hovertip(boton_agregar, "Agregar nuevo producto. Rellene todos los campos", hover_delay=500)
-
-# Que al seleccionar un campo, aparezca el placeholder
-ventana.bind("<FocusIn>", on_focus_in)
-# ventana.bind("<FocusIn>", on_focus_in_busqueda)
 
 # Mostramos la ventana
 ventana.mainloop()
