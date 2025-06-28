@@ -49,6 +49,7 @@ def mostrar_quienes_somos():
     ventana_info.resizable(False, False)
     ventana_info.transient(ventana)
     ventana_info.grab_set()
+    ventana_info.iconbitmap("icon/icon1.ico")
 
     # Centrar la ventana respecto a la ventana principal
     ancho, alto = 500, 400
