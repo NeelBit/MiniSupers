@@ -666,48 +666,50 @@ def carga_nuevo_producto(event=None):
     nombre = entrada_nombre.get().strip().title().capitalize()
     precio = entrada_precio.get().strip()
 
-    if not producto or not nombre or not precio:
+    if any([producto==(entrada_producto.placeholder or ''),nombre==(entrada_nombre.placeholder or ''), 
+            precio==(entrada_precio.placeholder or '') ]):
         messagebox.showwarning("Campos vacíos", "Por favor complete todos los campos.")
         return
-    try:
-        float(precio)
-    except ValueError:
-        messagebox.showwarning("Precio inválido", "El precio debe ser un número.")
-        return
+    else: 
+        try:
+            float(precio)
+            id_producto = contador_id[0]
+            contador_id[0] += 1
 
-    id_producto = contador_id[0]
-    contador_id[0] += 1
+            # Guardar en la lista
+            nuevo = {
+            "id": id_producto,
+            "producto": producto,
+            "nombre": nombre,
+            "precio": precio,
+            "seleccionado": False
+            }
+            lista_productos.append(nuevo)
 
-    # Guardar en la lista
-    nuevo = {
-        "id": id_producto,
-        "producto": producto,
-        "nombre": nombre,
-        "precio": precio,
-        "seleccionado": False
-    }
-    lista_productos.append(nuevo)
+            # Insertar en la tabla
+            tabla.insert(
+            "",
+            tk.END,
+            iid=str(id_producto),  # Usamos el id como iid
+            values=(producto, nombre, f"${precio}", "")
+            )
 
-    # Insertar en la tabla
-    tabla.insert(
-        "",
-        tk.END,
-        iid=str(id_producto),  # Usamos el id como iid
-        values=(producto, nombre, f"${precio}", "")
-    )
+            # Limpiar entradas
+            entrada_producto.delete(0, tk.END)
+            entrada_nombre.delete(0, tk.END)
+            entrada_precio.delete(0, tk.END)
 
-    # Limpiar entradas
-    entrada_producto.delete(0, tk.END)
-    entrada_nombre.delete(0, tk.END)
-    entrada_precio.delete(0, tk.END)
+            # Simula el evento focus out para mostrar el placeholder
+            for entrada in (entrada_producto, entrada_nombre, entrada_precio):
+                event = tk.Event()
+                event.widget = entrada
+                on_focus_out(event)
 
-    # Simula el evento focus out para mostrar el placeholder
-    for entrada in (entrada_producto, entrada_nombre, entrada_precio):
-        event = tk.Event()
-        event.widget = entrada
-        on_focus_out(event)
+            ventana.focus()
 
-    ventana.focus()
+        except ValueError:
+            messagebox.showwarning("Precio inválido", "El precio debe ser un número.")
+            return
 
 # Este es el botón para agregar el producto
 boton_agregar = tk.Button(frame_ingreso, text="Agregar",width=15, bg="#ddffdd", command=carga_nuevo_producto, justify='center')
