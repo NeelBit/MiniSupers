@@ -315,7 +315,7 @@ buscar_entrada.config(foreground="grey")
 buscar_entrada.placeholder = "Ingrese el producto que busca."
 buscar_entrada.insert(0, buscar_entrada.placeholder)
 
-def on_focus_in_busqueda(event):
+def on_focus_in(event):
     """
     Maneja el evento cuando el Entry de búsqueda recibe el foco.
 
@@ -329,12 +329,11 @@ def on_focus_in_busqueda(event):
     """
     widget = event.widget
     # Solo ejecuta si el widget es un Entry
-    if isinstance(widget, tk.Entry) or isinstance(widget, ttk.Entry):
-        if event.widget.get() == event.widget.placeholder:
-            event.widget.delete(0, tk.END)
-            event.widget.config(foreground="black")
+    if event.widget.get() == event.widget.placeholder:
+        event.widget.delete(0, tk.END)
+        event.widget.config(foreground="black")
 
-def on_focus_out_busqueda(event):
+def on_focus_out(event):
     """
     Maneja el evento cuando el Entry de búsqueda pierde el foco.
 
@@ -350,8 +349,8 @@ def on_focus_out_busqueda(event):
         event.widget.insert(0, event.widget.placeholder)
         event.widget.config(foreground="grey")
 
-buscar_entrada.bind("<FocusIn>", on_focus_in_busqueda)
-buscar_entrada.bind("<FocusOut>", on_focus_out_busqueda)
+buscar_entrada.bind("<FocusIn>", on_focus_in)
+buscar_entrada.bind("<FocusOut>", on_focus_out)
 buscar_entrada.pack(side=tk.LEFT, padx=10, pady=5)
 buscar_entrada.focus()
 # Tooltip para la entrada de búsqueda
@@ -580,37 +579,6 @@ tk.Label(frame_ingreso,font=label_font, text="Nombre:").grid(row=0, column=1, st
 tk.Label(frame_ingreso,font=label_font, text="Precio:").grid(row=0, column=3, sticky="w", padx=(0, 0), pady=(0, 0))
 
 # En esta parte creamos cajitas para escribir los datos que se van a ingresar
-def on_focus_in(event):
-    """
-    Maneja el evento cuando un Entry recibe el foco.
-
-    - Si el contenido del Entry es igual al placeholder, lo borra y cambia el color del texto a negro.
-
-    Parámetros:
-        event (tk.Event): Evento de Tkinter que contiene el widget que recibió el foco.
-
-    Retorna:
-        None
-    """
-    if event.widget.get() == event.widget.placeholder:
-        event.widget.delete(0, tk.END)
-        event.widget.config(fg="black")
-
-def on_focus_out(event):
-    """
-    Maneja el evento cuando un Entry pierde el foco.
-
-    - Si el Entry está vacío, coloca el texto del placeholder y cambia el color del texto a gris.
-
-    Parámetros:
-        event (tk.Event): Evento de Tkinter que contiene el widget que perdió el foco.
-
-    Retorna:
-        None
-    """
-    if not event.widget.get():
-        event.widget.insert(0, event.widget.placeholder)
-        event.widget.config(fg="grey")
 
 entrada_producto = tk.Entry(frame_ingreso, width=30, justify='center', fg="grey")
 entrada_producto.placeholder = "Ingrese el tipo de producto (ej. Leche, Pan, Gaseosa)"
@@ -666,58 +634,56 @@ def carga_nuevo_producto(event=None):
     nombre = entrada_nombre.get().strip().title().capitalize()
     precio = entrada_precio.get().strip()
 
-    if not producto or not nombre or not precio:
+    if any([producto==(entrada_producto.placeholder or ''),nombre==(entrada_nombre.placeholder or ''), 
+            precio==(entrada_precio.placeholder or '') ]):
         messagebox.showwarning("Campos vacíos", "Por favor complete todos los campos.")
         return
-    try:
-        float(precio)
-    except ValueError:
-        messagebox.showwarning("Precio inválido", "El precio debe ser un número.")
-        return
+    else: 
+        try:
+            float(precio)
+            id_producto = contador_id[0]
+            contador_id[0] += 1
 
-    id_producto = contador_id[0]
-    contador_id[0] += 1
+            # Guardar en la lista
+            nuevo = {
+            "id": id_producto,
+            "producto": producto,
+            "nombre": nombre,
+            "precio": precio,
+            "seleccionado": False
+            }
+            lista_productos.append(nuevo)
 
-    # Guardar en la lista
-    nuevo = {
-        "id": id_producto,
-        "producto": producto,
-        "nombre": nombre,
-        "precio": precio,
-        "seleccionado": False
-    }
-    lista_productos.append(nuevo)
+            # Insertar en la tabla
+            tabla.insert(
+            "",
+            tk.END,
+            iid=str(id_producto),  # Usamos el id como iid
+            values=(producto, nombre, f"${precio}", "")
+            )
 
-    # Insertar en la tabla
-    tabla.insert(
-        "",
-        tk.END,
-        iid=str(id_producto),  # Usamos el id como iid
-        values=(producto, nombre, f"${precio}", "")
-    )
+            # Limpiar entradas
+            entrada_producto.delete(0, tk.END)
+            entrada_nombre.delete(0, tk.END)
+            entrada_precio.delete(0, tk.END)
 
-    # Limpiar entradas
-    entrada_producto.delete(0, tk.END)
-    entrada_nombre.delete(0, tk.END)
-    entrada_precio.delete(0, tk.END)
+            # Simula el evento focus out para mostrar el placeholder
+            for entrada in (entrada_producto, entrada_nombre, entrada_precio):
+                event = tk.Event()
+                event.widget = entrada
+                on_focus_out(event)
 
-    # Simula el evento focus out para mostrar el placeholder
-    for entrada in (entrada_producto, entrada_nombre, entrada_precio):
-        event = tk.Event()
-        event.widget = entrada
-        on_focus_out(event)
+            ventana.focus()
 
-    ventana.focus()
+        except ValueError:
+            messagebox.showwarning("Precio inválido", "El precio debe ser un número.")
+            return
 
 # Este es el botón para agregar el producto
 boton_agregar = tk.Button(frame_ingreso, text="Agregar",width=15, bg="#ddffdd", command=carga_nuevo_producto, justify='center')
 boton_agregar.grid(row=1, column=4, padx=(5), sticky="e")
 # Tooltip para el botón de agregar
 Hovertip(boton_agregar, "Agregar nuevo producto. Rellene todos los campos", hover_delay=500)
-
-# Que al seleccionar un campo, aparezca el placeholder
-ventana.bind("<FocusIn>", on_focus_in)
-ventana.bind("<FocusIn>", on_focus_in_busqueda)
 
 # Mostramos la ventana
 ventana.mainloop()
