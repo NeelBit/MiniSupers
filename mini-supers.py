@@ -580,37 +580,6 @@ tk.Label(frame_ingreso,font=label_font, text="Nombre:").grid(row=0, column=1, st
 tk.Label(frame_ingreso,font=label_font, text="Precio:").grid(row=0, column=3, sticky="w", padx=(0, 0), pady=(0, 0))
 
 # En esta parte creamos cajitas para escribir los datos que se van a ingresar
-# def on_focus_in(event):
-#     """
-#     Maneja el evento cuando un Entry recibe el foco.
-
-#     - Si el contenido del Entry es igual al placeholder, lo borra y cambia el color del texto a negro.
-
-#     Parámetros:
-#         event (tk.Event): Evento de Tkinter que contiene el widget que recibió el foco.
-
-#     Retorna:
-#         None
-#     """
-#     if event.widget.get() == event.widget.placeholder:
-#         event.widget.delete(0, tk.END)
-#         event.widget.config(foreground="black")
-
-# def on_focus_out(event):
-#     """
-#     Maneja el evento cuando un Entry pierde el foco.
-
-#     - Si el Entry está vacío, coloca el texto del placeholder y cambia el color del texto a gris.
-
-#     Parámetros:
-#         event (tk.Event): Evento de Tkinter que contiene el widget que perdió el foco.
-
-#     Retorna:
-#         None
-#     """
-#     if not event.widget.get():
-#         event.widget.insert(0, event.widget.placeholder)
-#         event.widget.config(foreground="grey")
 
 entrada_producto = tk.Entry(frame_ingreso, width=30, justify='center', fg="grey")
 entrada_producto.placeholder = "Ingrese el tipo de producto (ej. Leche, Pan, Gaseosa)"
