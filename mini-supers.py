@@ -3,6 +3,97 @@ from tkinter import ttk, messagebox, Scrollbar
 # Importamos la librería para los tooltips
 from idlelib.tooltip import Hovertip
 
+# ──────────────────────────── MODO CLARO / OSCURO ────────────────────────────
+modo_oscuro = False  # Variable global para saber en qué modo estamos
+
+def aplicar_tema():
+    """
+    Aplica la paleta de colores según el modo seleccionado (claro u oscuro).
+    Se inspira en la paleta ‘HIPPIE BLUE / SPINDLE / BUSH / REGENT ST BLUE / TEAL BLUE’.
+    """
+    global colores
+    if modo_oscuro:
+        colores = {
+            "fondo": "#063561",
+            "texto": "#C0DAED",
+            "entrada": "#0E2A13",
+            "boton": "#5894BA",
+            "boton_texto": "#C0DAED",
+            "boton_eliminar": "#9DC7E4"
+        }
+    else:
+        colores = {
+            "fondo": "#C0DAED",
+            "texto": "#063561",
+            "entrada": "#9DC7E4",
+            "boton": "#5894BA",
+            "boton_texto": "#063561",
+            "boton_eliminar": "#0E2A13"
+        }
+
+    # Ventana y frames principales
+    try:
+        ventana.config(bg=colores["fondo"])
+        for marco in (frame_tabla,
+                      frame_ingreso,
+                      frame_acciones,
+                      frame_busqueda,
+                      frame_agrupados):
+            marco.config(bg=colores["fondo"])
+    except NameError:
+        # Algunos marcos todavía no existen cuando se llama por primera vez
+        pass
+
+    # Labels del frame_ingreso
+    try:
+        for w in frame_ingreso.winfo_children():
+            if isinstance(w, tk.Label):
+                w.config(bg=colores["fondo"], fg=colores["texto"])
+    except NameError:
+        pass
+
+    # Entradas de texto
+    try:
+        entrada_producto.config(
+            bg=colores["entrada"], fg=colores["texto"],
+            insertbackground=colores["texto"])
+        entrada_nombre.config(
+            bg=colores["entrada"], fg=colores["texto"],
+            insertbackground=colores["texto"])
+        entrada_precio.config(
+            bg=colores["entrada"], fg=colores["texto"],
+            insertbackground=colores["texto"])
+        buscar_entrada.config(
+            bg=colores["entrada"], fg=colores["texto"],
+            insertbackground=colores["texto"])
+    except NameError:
+        pass
+
+    # Botones
+    try:
+        boton_agregar.config(bg=colores["boton"], fg=colores["boton_texto"])
+        boton_eliminar.config(bg=colores["boton_eliminar"],
+                              fg=colores["boton_texto"])
+    except NameError:
+        pass
+
+def toggle_modo_oscuro():
+    """Invierte el modo y vuelve a aplicar la paleta."""
+    global modo_oscuro
+    modo_oscuro = not modo_oscuro
+    aplicar_tema()
+    actualizar_menu_modo()
+
+def actualizar_menu_modo():
+    """Cambia el label del ítem del menú para que diga el modo opuesto."""
+    nuevo_texto = "Modo claro" if modo_oscuro else "Modo oscuro"
+    try:
+        menu_ajustes.entryconfig(0, label=nuevo_texto)
+    except NameError:
+        pass
+# ─────────────────────────────────────────────────────────────────────────────
+
+
 # Lista para guardar los productos
 lista_productos = [
     {"producto": "Leche", "nombre": "La Serenísima", "precio": "1500"},
@@ -31,7 +122,7 @@ ventana.title('MiniSupers')
 ventana.geometry('780x600')  # Aumentamos la altura para que entre el nuevo panel
 
 # Icon
-ventana.iconbitmap("icon/icon1.ico")
+#ventana.iconbitmap("icon/icon1.ico")#
 
 # ********************** BARRA DE MENÚ **********************
 
@@ -92,6 +183,12 @@ menu_productos.add_command(label="Ver productos", command=lambda: mostrar_produc
 
 menu_info = tk.Menu(barra_menu, tearoff=0)
 menu_info.add_command(label="Quiénes somos", command=mostrar_quienes_somos)
+
+# ───── Nuevo menú Ajustes con opción de modo claro / oscuro ─────
+menu_ajustes = tk.Menu(barra_menu, tearoff=0)
+menu_ajustes.add_command(label="Modo oscuro", command=toggle_modo_oscuro)
+barra_menu.add_cascade(label="Ajustes", menu=menu_ajustes)
+# ────────────────────────────────────────────────────────────────
 
 barra_menu.add_cascade(label="Productos", menu=menu_productos)
 barra_menu.add_cascade(label="Quiénes somos", menu=menu_info)
@@ -259,7 +356,7 @@ def eliminar_seleccionados():
             lista_productos[:] = [prod for prod in lista_productos if str(prod["id"]) != item_id]
 
 # Este es el botón para eliminar productos
-boton_eliminar = tk.Button(frame_acciones, text="Eliminar",width=15, bg="#ffdddd", command=eliminar_seleccionados)
+boton_eliminar = tk.Button(frame_acciones, text="Eliminar", width=15, bg="#ffdddd", command=eliminar_seleccionados)
 boton_eliminar.pack(side=tk.RIGHT, padx=(0, 10))
 # Tooltip para el botón de eliminar
 Hovertip(boton_eliminar, "Eliminar productos seleccionados", hover_delay=500)
@@ -311,7 +408,7 @@ limpiar_button.pack(side=tk.LEFT)
 Hovertip(limpiar_button, "Limpiar entrada de búsqueda", hover_delay=500)
 
 # Entrada de busqueda
-buscar_entrada = ttk.Entry(frame_busqueda, justify='center')
+buscar_entrada = tk.Entry(frame_busqueda, justify='center')
 buscar_entrada.config(foreground="grey")
 buscar_entrada.placeholder = "Ingrese el producto que busca."
 buscar_entrada.insert(0, buscar_entrada.placeholder)
@@ -575,9 +672,9 @@ frame_ingreso.pack(fill=tk.X, side=tk.BOTTOM, padx=10, pady=10)
 
 # Estas son etiquetas de cada campo que hicimos
 label_font = ("Arial", 10, "bold")
-tk.Label(frame_ingreso,font=label_font, text="Producto:").grid(row=0, column=0, sticky="w", padx=(5, 5), pady=(0, 2))
-tk.Label(frame_ingreso,font=label_font, text="Nombre:").grid(row=0, column=1, sticky="w", padx=(5, 5), pady=(0, 2))
-tk.Label(frame_ingreso,font=label_font, text="Precio:").grid(row=0, column=3, sticky="w", padx=(0, 0), pady=(0, 0))
+tk.Label(frame_ingreso, font=label_font, text="Producto:").grid(row=0, column=0, sticky="w", padx=(5, 5), pady=(0, 2))
+tk.Label(frame_ingreso, font=label_font, text="Nombre:").grid(row=0, column=1, sticky="w", padx=(5, 5), pady=(0, 2))
+tk.Label(frame_ingreso, font=label_font, text="Precio:").grid(row=0, column=3, sticky="w", padx=(0, 0), pady=(0, 0))
 
 # En esta parte creamos cajitas para escribir los datos que se van a ingresar
 
@@ -681,10 +778,11 @@ def carga_nuevo_producto(event=None):
             return
 
 # Este es el botón para agregar el producto
-boton_agregar = tk.Button(frame_ingreso, text="Agregar",width=15, bg="#ddffdd", command=carga_nuevo_producto, justify='center')
+boton_agregar = tk.Button(frame_ingreso, text="Agregar", width=15, bg="#ddffdd", command=carga_nuevo_producto, justify='center')
 boton_agregar.grid(row=1, column=4, padx=(5), sticky="e")
 # Tooltip para el botón de agregar
 Hovertip(boton_agregar, "Agregar nuevo producto. Rellene todos los campos", hover_delay=500)
 
-# Mostramos la ventana
+# ─────────────── Aplicamos la paleta inicial y arrancamos ───────────────
+aplicar_tema()
 ventana.mainloop()
