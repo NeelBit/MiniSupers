@@ -14,7 +14,7 @@ def aplicar_tema():
     global colores
     if modo_oscuro:
         colores = {
-            "fondo": "#222831",           # Muy oscuro
+            "fondo": "#222831",           
             "texto": "#0F0F0F",
             "entrada": "#FDFDFD", 
             "boton": "#00ADB5",           # Turquesa fuerte
@@ -23,9 +23,9 @@ def aplicar_tema():
         }
     else:
         colores = {
-            "fondo": "#C0DAED",           # 
-            "texto": "#222831",           # Muy oscuro
-            "entrada": "#FFFFFF",         # Blanco
+            "fondo": "#C0DAED",           
+            "texto": "#222831",           
+            "entrada": "#FFFFFF",         
             "boton": "#007ACC",           # Azul fuerte
             "boton_texto": "#FFFFFF",     # Blanco
             "boton_eliminar": "#D32F2F"   # Rojo fuerte
@@ -347,13 +347,13 @@ frame_acciones.pack(fill=tk.X, padx=10, pady=5)
 # Label de seleccionados
 label_seleccionados = tk.Label(
     frame_acciones,
-    text="No hay productos seleccionados.",
+    text="No hay productos seleccionados",
     font=("Arial", 11, "bold"),
-    fg="#007ACC",           # Azul para modo claro, puedes cambiarlo según el tema
-    bg="#EAF6FF",           # Fondo suave, cambia según tu paleta
-    padx=12, pady=6,        # Padding interno
+    fg="#007ACC",
+    bg="#EAF6FF",
+    padx=12, pady=6,
     borderwidth=2,
-    relief="groove"         # Borde sutil
+    relief="groove"
 )
 label_seleccionados.pack(side=tk.LEFT, padx=(0, 10))
 
