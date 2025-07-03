@@ -122,7 +122,7 @@ ventana.title('MiniSupers')
 ventana.geometry('780x600')  # Aumentamos la altura para que entre el nuevo panel
 
 # Icon
-#ventana.iconbitmap("icon/icon1.ico")#
+ventana.iconbitmap("icon/icon1.ico")
 
 # ********************** BARRA DE MENÚ **********************
 
@@ -180,6 +180,7 @@ Desarrollado con Python y Tkinter, MiniSupers ofrece una interfaz intuitiva y fu
         ventana_mas_info = tk.Toplevel(ventana_info)
         ventana_mas_info.title("Información de los integrantes")
         ventana_mas_info.resizable(False, False)
+        ventana_mas_info.iconbitmap("icon/icon1.ico")
 
         # Centrar esta ventana respecto a la ventana "Quiénes somos"
         ancho2, alto2 = 500, 250
@@ -192,9 +193,9 @@ Desarrollado con Python y Tkinter, MiniSupers ofrece una interfaz intuitiva y fu
         frame_mas.pack(fill=tk.BOTH, expand=True)
 
         integrantes = [
-            "Ricardo Cardozo",
-            "Beltran Nelson",
-            "Gomez Carlos Eduardo",
+            "Ricardo, Cardozo",
+            "Bertran, Nelson",
+            "Gomez, Carlos Eduardo",
             "Puente Gonzalez, Emily"
         ]
 
@@ -217,15 +218,14 @@ menu_productos.add_command(label="Ver productos", command=lambda: mostrar_produc
 menu_info = tk.Menu(barra_menu, tearoff=0)
 menu_info.add_command(label="Quiénes somos", command=mostrar_quienes_somos)
 
+barra_menu.add_cascade(label="Productos", menu=menu_productos)
+barra_menu.add_cascade(label="¿Quiénes somos?", menu=menu_info)
+
 # ───── Nuevo menú Ajustes con opción de modo claro / oscuro ─────
 menu_ajustes = tk.Menu(barra_menu, tearoff=0)
 menu_ajustes.add_command(label="Modo oscuro", command=toggle_modo_oscuro)
 barra_menu.add_cascade(label="Ajustes", menu=menu_ajustes)
 # ────────────────────────────────────────────────────────────────
-
-barra_menu.add_cascade(label="Productos", menu=menu_productos)
-barra_menu.add_cascade(label="Quiénes somos", menu=menu_info)
-
 
 # ********************** TABLA **********************
 
