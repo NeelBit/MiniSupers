@@ -14,21 +14,21 @@ def aplicar_tema():
     global colores
     if modo_oscuro:
         colores = {
-            "fondo": "#063561",
-            "texto": "#C0DAED",
-            "entrada": "#0E2A13",
-            "boton": "#5894BA",
-            "boton_texto": "#C0DAED",
-            "boton_eliminar": "#9DC7E4"
+            "fondo": "#222831",           # Muy oscuro
+            "texto": "#0F0F0F",
+            "entrada": "#FDFDFD", 
+            "boton": "#00ADB5",           # Turquesa fuerte
+            "boton_texto": "#FFFFFF",     # Blanco
+            "boton_eliminar": "#FF5722"   # Naranja fuerte
         }
     else:
         colores = {
-            "fondo": "#C0DAED",
-            "texto": "#063561",
-            "entrada": "#9DC7E4",
-            "boton": "#5894BA",
-            "boton_texto": "#063561",
-            "boton_eliminar": "#0E2A13"
+            "fondo": "#C0DAED",           # 
+            "texto": "#222831",           # Muy oscuro
+            "entrada": "#FFFFFF",         # Blanco
+            "boton": "#007ACC",           # Azul fuerte
+            "boton_texto": "#FFFFFF",     # Blanco
+            "boton_eliminar": "#D32F2F"   # Rojo fuerte
         }
 
     # Ventana y frames principales
@@ -55,16 +55,16 @@ def aplicar_tema():
     # Entradas de texto
     try:
         entrada_producto.config(
-            bg=colores["entrada"], fg=colores["texto"],
+            bg=colores["entrada"], fg="grey",
             insertbackground=colores["texto"])
         entrada_nombre.config(
-            bg=colores["entrada"], fg=colores["texto"],
+            bg=colores["entrada"], fg="grey",
             insertbackground=colores["texto"])
         entrada_precio.config(
-            bg=colores["entrada"], fg=colores["texto"],
+            bg=colores["entrada"], fg="grey",
             insertbackground=colores["texto"])
         buscar_entrada.config(
-            bg=colores["entrada"], fg=colores["texto"],
+            bg=colores["entrada"], fg="grey",
             insertbackground=colores["texto"])
     except NameError:
         pass
@@ -72,8 +72,8 @@ def aplicar_tema():
     # Botones
     try:
         boton_agregar.config(bg=colores["boton"], fg=colores["boton_texto"])
-        boton_eliminar.config(bg=colores["boton_eliminar"],
-                              fg=colores["boton_texto"])
+        boton_eliminar.config(bg=colores["boton_eliminar"], fg=colores["boton_texto"])
+        busqueda_button.config(bg=colores["boton"], fg=colores["boton_texto"])
     except NameError:
         pass
 
@@ -345,18 +345,27 @@ frame_acciones = tk.Frame(ventana)
 frame_acciones.pack(fill=tk.X, padx=10, pady=5)
 
 # Label de seleccionados
-label_seleccionados = tk.Label(frame_acciones, text="No hay productos seleccionados.")
+label_seleccionados = tk.Label(
+    frame_acciones,
+    text="No hay productos seleccionados.",
+    font=("Arial", 11, "bold"),
+    fg="#007ACC",           # Azul para modo claro, puedes cambiarlo según el tema
+    bg="#EAF6FF",           # Fondo suave, cambia según tu paleta
+    padx=12, pady=6,        # Padding interno
+    borderwidth=2,
+    relief="groove"         # Borde sutil
+)
 label_seleccionados.pack(side=tk.LEFT, padx=(0, 10))
 
 def actualizar_label_seleccionados(event=None):
     sincronizar_checks()
     cantidad = len(tabla.selection())
     label_seleccionados.config(text=(
-            "No hay productos seleccionados."
+            "No hay productos seleccionados"
             if cantidad == 0 else
-            f"Seleccionado: {cantidad} producto."
+            f"Seleccionado: {cantidad} producto"
             if cantidad == 1 else
-            f"Seleccionados: {cantidad} productos."
+            f"Seleccionados: {cantidad} productos"
         )
     )
 
@@ -489,7 +498,7 @@ buscar_entrada.focus()
 Hovertip(buscar_entrada, "¿Qué producto busca?", hover_delay=500)
 
 # Boton de busqueda
-busqueda_button = ttk.Button(frame_busqueda, text="Buscar", width=15, command=lambda: buscar_en_tabla(buscar_entrada.get()))
+busqueda_button = tk.Button(frame_busqueda, text="Buscar", width=15, command=lambda: buscar_en_tabla(buscar_entrada.get()))
 busqueda_button.pack(side=tk.LEFT, padx=10, pady=5)
 # Tooltip para el botón de búsqueda
 Hovertip(busqueda_button, "Buscar producto", hover_delay=500)
