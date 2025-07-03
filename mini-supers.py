@@ -143,7 +143,7 @@ def mostrar_quienes_somos():
     ventana_info.iconbitmap("icon/icon1.ico")
 
     # Centrar la ventana respecto a la ventana principal
-    ancho, alto = 500, 400
+    ancho, alto = 500, 450
     ventana.update_idletasks()
     x_principal = ventana.winfo_x()
     y_principal = ventana.winfo_y()
@@ -175,6 +175,39 @@ Desarrollado con Python y Tkinter, MiniSupers ofrece una interfaz intuitiva y fu
     texto_label = tk.Label(frame_contenido, text=texto_info, justify=tk.LEFT, wraplength=450, font=("Arial", 10))
     texto_label.pack(pady=(0, 20))
 
+    # Botón para ver más información
+    def ver_mas_info():
+        ventana_mas_info = tk.Toplevel(ventana_info)
+        ventana_mas_info.title("Información de los integrantes")
+        ventana_mas_info.resizable(False, False)
+
+        # Centrar esta ventana respecto a la ventana "Quiénes somos"
+        ancho2, alto2 = 500, 250
+        ventana_info.update_idletasks()
+        x2 = ventana_info.winfo_x() + (ventana_info.winfo_width() // 2) - (ancho2 // 2)
+        y2 = ventana_info.winfo_y() + (ventana_info.winfo_height() // 2) - (alto2 // 2)
+        ventana_mas_info.geometry(f"{ancho2}x{alto2}+{x2}+{y2}")
+
+        frame_mas = tk.Frame(ventana_mas_info, padx=20, pady=20)
+        frame_mas.pack(fill=tk.BOTH, expand=True)
+
+        integrantes = [
+            "Ricardo Cardozo",
+            "Beltran Nelson",
+            "Gomez Carlos Eduardo",
+            "Puente Gonzalez, Emily"
+        ]
+
+        for nombre in integrantes:
+            label = tk.Label(frame_mas, text=nombre, justify=tk.LEFT, anchor="w", font=("Arial", 10))
+            label.pack(anchor="w", pady=(0, 5))
+
+        boton_cerrar_info = tk.Button(frame_mas, text="Cerrar", command=ventana_mas_info.destroy, bg="#dddddd", width=15)
+        boton_cerrar_info.pack(pady=(10, 0))
+
+    boton_mas_info = tk.Button(frame_contenido, text="Ver más información", command=ver_mas_info, bg="#e6e6e6", width=20)
+    boton_mas_info.pack(pady=(0, 10))
+
     boton_cerrar = tk.Button(frame_contenido, text="Cerrar", command=ventana_info.destroy, bg="#dddddd", width=15)
     boton_cerrar.pack()
 
@@ -192,6 +225,7 @@ barra_menu.add_cascade(label="Ajustes", menu=menu_ajustes)
 
 barra_menu.add_cascade(label="Productos", menu=menu_productos)
 barra_menu.add_cascade(label="Quiénes somos", menu=menu_info)
+
 
 # ********************** TABLA **********************
 
