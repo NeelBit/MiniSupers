@@ -15,7 +15,7 @@ def aplicar_tema():
     if modo_oscuro:
         colores = {
             "fondo": "#222831",           
-            "texto": "#0F0F0F",
+            "texto": "#FDFDFD",
             "entrada": "#FDFDFD", 
             "boton": "#00ADB5",           # Turquesa fuerte
             "boton_texto": "#FFFFFF",     # Blanco
